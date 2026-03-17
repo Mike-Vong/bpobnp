@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BPO Bonus & Penalty Proposal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --green: #00c48c;
+      --red: #ff4d6d;
+      --amber: #ffb703;
+      --navy: #0d1b2a;
+      --slate: #1c2e3e;
+      --card: #162333;
+      --border: rgba(255,255,255,0.08);
+      --text: #e8edf2;
+      --muted: #7a9ab5;
+      --accent: #00c48c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,27,42,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 60px;
+    }
+    .nav-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--green);
+      letter-spacing: -0.3px;
+    }
+    .nav-brand span { color: var(--text); }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 80px 60px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      background: rgba(0,196,140,0.1);
+      border: 1px solid rgba(0,196,140,0.2);
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--green);
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 620px;
+      font-weight: 300;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .hero-meta-item label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .hero-meta-item span {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    /* SECTIONS */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 60px 40px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(24px, 3vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 300;
+      max-width: 680px;
+      margin-bottom: 40px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 60px;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    /* GRID LAYOUTS */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* STAT CARDS */
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .stat-card.bonus::before { background: var(--green); }
+    .stat-card.penalty::before { background: var(--red); }
+    .stat-card.neutral::before { background: var(--amber); }
+    .stat-card label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 8px;
+    }
+    .stat-card .value {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .stat-card .value.green { color: var(--green); }
+    .stat-card .value.red { color: var(--red); }
+    .stat-card .value.amber { color: var(--amber); }
+    .stat-card .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+    /* HISTORICAL TABLE */
+    .perf-table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead tr {
+      background: rgba(255,255,255,0.04);
+    }
+    th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-green { background: rgba(0,196,140,0.15); color: var(--green); }
+    .badge-red { background: rgba(255,77,109,0.15); color: var(--red); }
+    .badge-amber { background: rgba(255,183,3,0.15); color: var(--amber); }
+    .badge-neutral { background: rgba(255,255,255,0.08); color: var(--muted); }
+
+    /* CHART CONTAINER */
+    .chart-wrap {
+      position: relative;
+      height: 260px;
+    }
+
+    /* PROPOSAL CARDS */
+    .proposal-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .proposal-num {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .p1 .proposal-num { background: rgba(0,196,140,0.15); color: var(--green); }
+    .p2 .proposal-num { background: rgba(99,102,241,0.15); color: #818cf8; }
+    .p3 .proposal-num { background: rgba(255,183,3,0.15); color: var(--amber); }
+
+    /* SCALE BAR */
+    .scale-track {
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .scale-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    /* SLIDERS */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .slider-row {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .slider-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .slider-vals {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-val-display {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      min-width: 60px;
+      text-align: right;
+    }
+    .slider-val-display.green { color: var(--green); }
+    .slider-val-display.red { color: var(--red); }
+    input[type="number"].target-input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 5px 10px;
+      width: 90px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      text-align: center;
+    }
+    input[type="number"].target-input:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.1);
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--green);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0,196,140,0.4);
+    }
+    input[type="range"].red-thumb::-webkit-slider-thumb {
+      background: var(--red);
+      box-shadow: 0 0 8px rgba(255,77,109,0.4);
+    }
+    .slider-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* PAYOUT RESULT BOX */
+    .payout-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .payout-box h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .payout-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .payout-line:last-of-type { border-bottom: none; }
+    .payout-line .label { font-size: 13px; color: var(--muted); }
+    .payout-line .amount {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .total-payout {
+      background: rgba(0,196,140,0.08);
+      border: 1px solid rgba(0,196,140,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .total-payout .total-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .total-payout .total-amount {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      letter-spacing: -0.5px;
+    }
+    .total-payout.penalty-box {
+      background: rgba(255,77,109,0.08);
+      border-color: rgba(255,77,109,0.2);
+    }
+    .total-payout.penalty-box .total-amount { color: var(--red); }
+
+    /* BPO SELECTOR */
+    .bpo-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .bpo-tab {
+      padding: 8px 20px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .bpo-tab:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .bpo-tab.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* PROPOSAL SECTION WRAPPERS */
+    .proposal-section {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      margin-bottom: 24px;
+    }
+    .proposal-section.p1 { border-color: rgba(0,196,140,0.2); }
+    .proposal-section.p2 { border-color: rgba(99,102,241,0.2); }
+    .proposal-section.p3 { border-color: rgba(255,183,3,0.2); }
+
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .kpi-chip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kpi-chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+    .kpi-chip-dot.purple { background: #818cf8; }
+    .kpi-chip-dot.amber { background: var(--amber); }
+
+    /* INTERACTION MATRIX */
+    .interaction-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .interaction-cell {
+      border-radius: 12px;
+      padding: 16px 8px;
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+    }
+    .interaction-cell .score { font-size: 22px; }
+    .interaction-cell .outcome { font-size: 10px; letter-spacing: 0.5px; margin-top: 4px; font-family: 'DM Sans', sans-serif; }
+    .cell-bonus-high { background: rgba(0,196,140,0.2); border: 1px solid rgba(0,196,140,0.3); color: var(--green); }
+    .cell-bonus-low { background: rgba(0,196,140,0.1); border: 1px solid rgba(0,196,140,0.15); color: #5dd9b5; }
+    .cell-neutral { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); }
+    .cell-penalty-low { background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.15); color: #ff8fa3; }
+    .cell-penalty-high { background: rgba(255,77,109,0.2); border: 1px solid rgba(255,77,109,0.3); color: var(--red); }
+
+    /* TOGGLE DETAILS */
+    details summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      padding: 10px 0;
+      user-select: none;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before {
+      content: '▸';
+      transition: transform 0.2s;
+      color: var(--green);
+    }
+    details[open] summary::before { transform: rotate(90deg); }
+    details[open] summary { color: var(--text); }
+
+    /* TWO-COL PROPOSAL LAYOUT */
+    .two-col-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px 60px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    footer strong { color: var(--green); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      section { padding: 40px 20px 30px; }
+      .hero { padding: 50px 20px 40px; }
+      .divider { margin: 0 20px; }
+      .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .two-col-layout { grid-template-columns: 1fr; }
+      .interaction-grid { grid-template-columns: repeat(4, 1fr); }
+      .nav-links { display: none; }
+    }
+
+    /* CURRENT SCALE VISUAL */
+    .scale-visual {
+      display: flex;
+      overflow: hidden;
+      border-radius: 10px;
+      height: 44px;
+      margin-bottom: 8px;
+    }
+    .scale-seg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex: 1;
+      font-family: 'Syne', sans-serif;
+    }
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 12px;
+      margin: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">BPO<span>BNP</span></div>
+  <div class="nav-links">
+    <a href="#historical">Historical</a>
+    <a href="#proposal1">Proposal 1</a>
+    <a href="#proposal2">Proposal 2</a>
+    <a href="#proposal3">Proposal 3</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Vendor Solutions · Internal</div>
+  <h1>BPO Bonus &amp; Penalty<br/><em>Proposal</em></h1>
+  <p>A comprehensive review of the current performance-based pricing model with three forward-looking proposals to enhance BPO accountability and merchant experience outcomes.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <label>Prepared by</label>
+      <span>Mike Vong &amp; Jennifer Routledge</span>
+    </div>
+    <div class="hero-meta-item">
+      <label>Date</label>
+      <span>March 2026</span>
+    </div>
+    <div class="hero-meta-item">
+      <label>BPOs Covered</label>
+      <span>TaskUs · InTouchCX · TELUS</span>
+    </div>
+    <div class="hero-meta-item">
+      <label>Current Max B&amp;P</label>
+      <span>±5% (Core) · ±10% (Premium)</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 1: HISTORICAL                       -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="historical">
+  <div class="section-label">Section 01</div>
+  <div class="section-title">Historical Performance</div>
+  <div class="section-sub">Six-month review (Oct 2024 – Mar 2025) of KPI performance versus targets across all BPO partners, with implied bonus/penalty outcomes.</div>
+
+  <!-- BPO SELECTOR -->
+  <div class="bpo-tabs">
+    <button class="bpo-tab active" onclick="selectBPO('taskus', this)">TaskUs</button>
+    <button class="bpo-tab" onclick="selectBPO('intouchcx', this)">InTouchCX</button>
+    <button class="bpo-tab" onclick="selectBPO('telus', this)">TELUS</button>
+    <button class="bpo-tab" onclick="selectBPO('overall', this)">Overall View</button>
+  </div>
+
+  <!-- SUMMARY STATS (dynamically updated) -->
+  <div class="grid-4" style="margin-bottom:24px;">
+    <div class="stat-card bonus">
+      <label>Avg Monthly Score</label>
+      <div class="value green" id="h-avg-score">—</div>
+      <div class="sub">out of 45 pts</div>
+    </div>
+    <div class="stat-card neutral">
+      <label>Months with Bonus</label>
+      <div class="value amber" id="h-bonus-months">—</div>
+      <div class="sub">Oct 24 – Mar 25</div>
+    </div>
+    <div class="stat-card penalty">
+      <label>Months with Penalty</label>
+      <div class="value red" id="h-penalty-months">—</div>
+      <div class="sub">Oct 24 – Mar 25</div>
+    </div>
+    <div class="stat-card neutral">
+      <label>Net B&amp;P Outcome</label>
+      <div class="value amber" id="h-net-outcome">—</div>
+      <div class="sub">Estimated direction</div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-title" id="chart-title">TaskUs — Score vs. Target (Oct 2024 – Mar 2025)</div>
+    <div class="chart-wrap">
+      <canvas id="historicalChart"></canvas>
+    </div>
+  </div>
+
+  <!-- PERFORMANCE TABLE -->
+  <div class="card">
+    <div class="card-title" id="table-bpo-title">TaskUs — Monthly KPI Results (Core LOB)</div>
+    <div class="perf-table-wrap">
+      <table id="historicalTable">
+        <thead>
+          <tr>
+            <th>KPI</th>
+            <th>Target</th>
+            <th>Oct 24</th>
+            <th>Nov 24</th>
+            <th>Dec 24</th>
+            <th>Jan 25</th>
+            <th>Feb 25</th>
+            <th>Mar 25</th>
+          </tr>
+        </thead>
+        <tbody id="historicalTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- IMPLIED B&P TABLE -->
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">Implied Bonus / Penalty by Month (Score-Based)</div>
+    <div class="perf-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>BPO</th>
+            <th>LOB</th>
+            <th>Oct 24</th>
+            <th>Nov 24</th>
+            <th>Dec 24</th>
+            <th>Jan 25</th>
+            <th>Feb 25</th>
+            <th>Mar 25</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TaskUs</td>
+            <td>Core</td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-neutral">Neutral</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+          </tr>
+          <tr>
+            <td>TaskUs</td>
+            <td>Core Premium</td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-neutral">Neutral</span></td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-neutral">Neutral</span></td>
+          </tr>
+          <tr>
+            <td>TaskUs</td>
+            <td>Retail</td>
+            <td><span class="badge badge-neutral">Neutral</span></td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+          </tr>
+          <tr>
+            <td>InTouchCX</td>
+            <td>Core</td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+          </tr>
+          <tr>
+            <td>InTouchCX</td>
+            <td>Retail</td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-neutral">N/A</span></td>
+          </tr>
+          <tr>
+            <td>TELUS</td>
+            <td>Core</td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+          </tr>
+          <tr>
+            <td>TELUS</td>
+            <td>Core Premium</td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+          </tr>
+          <tr>
+            <td>TELUS</td>
+            <td>Retail</td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-neutral">Neutral</span></td>
+            <td><span class="badge badge-green">Bonus</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+            <td><span class="badge badge-neutral">Neutral</span></td>
+            <td><span class="badge badge-red">Penalty</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:16px; padding:14px 16px; background:rgba(255,183,3,0.07); border:1px solid rgba(255,183,3,0.15); border-radius:10px; font-size:12px; color:var(--muted);">
+      <strong style="color:var(--amber);">Note on Data Constraints:</strong> Several data quality issues were identified during this period including data migration impacts, Zendesk ticket deletion (Jan 2025), Beacon instability (Jan–Mar 2025), and missing AHT data (Mar 2025). Results should be interpreted with these constraints in mind.
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2: CURRENT SCORECARD STRUCTURE      -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="section-label">Current Structure</div>
+  <div class="section-title">Today's Scorecard Methodology</div>
+  <div class="section-sub">Understanding the baseline before exploring proposals. The current model uses a point-based scorecard across 5 KPIs with a ±5% (Core/Retail/Plus) and ±10% (Core Premium) bonus/penalty scale.</div>
+
+  <div class="grid-2" style="margin-bottom:24px;">
+    <div class="card">
+      <div class="card-title">Core / Retail / Plus Scale (±5%)</div>
+      <div class="scale-visual">
+        <div class="scale-seg" style="background:rgba(255,77,109,0.6);color:#fff;flex:0.5;">-5%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.45);color:#fff;flex:0.5;">-5%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.35);color:#fff;flex:0.5;">-4%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.25);color:#fff;flex:0.5;">-3%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.15);color:#aaa;flex:0.5;">-2%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.08);color:#aaa;flex:0.5;">-1%</div>
+        <div class="scale-seg" style="background:rgba(255,255,255,0.08);color:#aaa;flex:1;">0%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.08);color:#aaa;flex:0.5;">+1%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.15);color:#aaa;flex:0.5;">+2%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.25);color:#fff;flex:0.5;">+3%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.35);color:#fff;flex:0.5;">+4%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.5);color:#fff;flex:0.5;">+5%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.65);color:#fff;flex:0.5;">+5%</div>
+      </div>
+      <div class="slider-meta"><span>0 pts</span><span>24 pts (penalty)</span><span>25 pts (pass)</span><span>26 pts (bonus)</span><span>45 pts</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Core Premium Scale (±10%)</div>
+      <div class="scale-visual">
+        <div class="scale-seg" style="background:rgba(255,77,109,0.6);color:#fff;flex:0.5;">-10%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.45);color:#fff;flex:0.5;">-10%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.35);color:#fff;flex:0.5;">-9%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.25);color:#fff;flex:0.5;">-8%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.15);color:#aaa;flex:0.5;">-7%</div>
+        <div class="scale-seg" style="background:rgba(255,77,109,0.08);color:#aaa;flex:0.5;">-6%</div>
+        <div class="scale-seg" style="background:rgba(255,255,255,0.08);color:#aaa;flex:1;">0%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.08);color:#aaa;flex:0.5;">+6%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.15);color:#aaa;flex:0.5;">+7%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.25);color:#fff;flex:0.5;">+8%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.35);color:#fff;flex:0.5;">+9%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.5);color:#fff;flex:0.5;">+10%</div>
+        <div class="scale-seg" style="background:rgba(0,196,140,0.65);color:#fff;flex:0.5;">+10%</div>
+      </div>
+      <div class="slider-meta"><span>0 pts</span><span>24 pts (penalty)</span><span>25 pts (pass)</span><span>26 pts (bonus)</span><span>45 pts</span></div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Scoring Methodology</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+        <div class="payout-line"><span class="label">Total scorecard</span><span>45 points</span></div>
+        <div class="payout-line"><span class="label">Each KPI (except Hours)</span><span>0–10 pts</span></div>
+        <div class="payout-line"><span class="label">Hours Delivery</span><span>0–5 pts</span></div>
+        <div class="payout-line"><span class="label">Passing grade per KPI</span><span>5 pts</span></div>
+        <div class="payout-line"><span class="label">Penalty threshold</span><span>≤ 24 pts</span></div>
+        <div class="payout-line"><span class="label">Bonus threshold</span><span>≥ 26 pts</span></div>
+        <div class="payout-line" style="border:none;"><span class="label">Floor / Ceiling per KPI</span><span>75% – 125% of target</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Current KPIs</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+        <div class="category-badge"><span style="color:var(--green);">●</span> Overall Smiley (Merchant CSAT)</div>
+        <div class="category-badge"><span style="color:var(--green);">●</span> Chat AHT (Average Handle Time)</div>
+        <div class="category-badge"><span style="color:var(--green);">●</span> Positive Sentiment (AI-assessed)</div>
+        <div class="category-badge"><span style="color:var(--green);">●</span> AFTR (Avoid Follow-up Ticket Rate)</div>
+        <div class="category-badge"><span style="color:var(--green);">●</span> Hours Delivery</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Key Rules</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);">
+        <div style="padding:8px 12px;background:rgba(255,77,109,0.07);border-radius:8px;border:1px solid rgba(255,77,109,0.15);">No bonus applied if any single KPI falls below the performance threshold (score &lt; 3)</div>
+        <div style="padding:8px 12px;background:rgba(0,196,140,0.07);border-radius:8px;border:1px solid rgba(0,196,140,0.15);">Bonus/Penalty applied on total LOB invoice amount</div>
+        <div style="padding:8px 12px;background:rgba(255,183,3,0.07);border-radius:8px;border:1px solid rgba(255,183,3,0.15);">Target setting = Median avg of 2nd best performing quartile</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3: PROPOSAL 1                       -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="proposal1">
+  <div class="section-label">Section 02 · Proposal 1</div>
+  <div class="section-title">Increase to ±10% Across All LOBs</div>
+  <div class="section-sub">Expand the current maximum bonus and penalty from 5% to 10% for Core, Retail, and Plus — aligning with the existing Core Premium structure and increasing financial accountability.</div>
+
+  <div class="proposal-section p1">
+    <div class="proposal-header">
+      <div class="proposal-num p1">01</div>
+      <div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.3px;">Expand Bonus &amp; Penalty Ceiling</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px;">All LOBs move to ±10% structure, maintaining same 45-pt scorecard and threshold methodology.</p>
+      </div>
+    </div>
+
+    <div class="kpi-grid" style="margin-bottom:28px;">
+      <div class="kpi-chip"><span class="kpi-chip-dot"></span>Merchant Smiley</div>
+      <div class="kpi-chip"><span class="kpi-chip-dot"></span>Average Handle Time</div>
+      <div class="kpi-chip"><span class="kpi-chip-dot"></span>AFTR</div>
+      <div class="kpi-chip"><span class="kpi-chip-dot"></span>Valid Live Assist</div>
+      <div class="kpi-chip"><span class="kpi-chip-dot"></span>Hours Delivery</div>
+    </div>
+
+    <div class="two-col-layout">
+      <!-- SLIDERS -->
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">KPI Projection Inputs</h3>
+        <div class="slider-group">
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Merchant Smiley</span>
+              <div class="slider-vals">
+                <span style="font-size:11px;color:var(--muted);">Target:</span>
+                <input type="number" class="target-input" id="p1-smiley-target" value="83.33" step="0.1" onchange="calcProposal1()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p1-smiley" min="62" max="105" step="0.5" value="83.33" oninput="updateSliderDisplay('p1-smiley');calcProposal1()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p1-smiley-val" style="color:var(--text);font-weight:600;">83.33%</span></span>
+              <span class="slider-val-display green" id="p1-smiley-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Average Handle Time (min)</span>
+              <div class="slider-vals">
+                <span style="font-size:11px;color:var(--muted);">Target:</span>
+                <input type="number" class="target-input" id="p1-aht-target" value="33.22" step="0.1" onchange="calcProposal1()"/>
+                <span style="font-size:11px;color:var(--muted);">min</span>
+              </div>
+            </div>
+            <input type="range" class="red-thumb" id="p1-aht" min="25" max="44" step="0.1" value="33.22" oninput="updateSliderDisplay('p1-aht');calcProposal1()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p1-aht-val" style="color:var(--text);font-weight:600;">33.22 min</span></span>
+              <span class="slider-val-display green" id="p1-aht-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">AFTR</span>
+              <div class="slider-vals">
+                <span style="font-size:11px;color:var(--muted);">Target:</span>
+                <input type="number" class="target-input" id="p1-aftr-target" value="86.18" step="0.1" onchange="calcProposal1()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p1-aftr" min="64" max="108" step="0.5" value="86.18" oninput="updateSliderDisplay('p1-aftr');calcProposal1()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p1-aftr-val" style="color:var(--text);font-weight:600;">86.18%</span></span>
+              <span class="slider-val-display green" id="p1-aftr-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Valid Live Assist Rate</span>
+              <div class="slider-vals">
+                <span style="font-size:11px;color:var(--muted);">Target:</span>
+                <input type="number" class="target-input" id="p1-vla-target" value="80.00" step="0.1" onchange="calcProposal1()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p1-vla" min="60" max="100" step="0.5" value="80.00" oninput="updateSliderDisplay('p1-vla');calcProposal1()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p1-vla-val" style="color:var(--text);font-weight:600;">80.00%</span></span>
+              <span class="slider-val-display green" id="p1-vla-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Hours Delivery</span>
+              <div class="slider-vals">
+                <span style="font-size:11px;color:var(--muted);">Target:</span>
+                <input type="number" class="target-input" id="p1-hours-target" value="100" step="0.1" onchange="calcProposal1()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p1-hours" min="75" max="100" step="0.5" value="100" oninput="updateSliderDisplay('p1-hours');calcProposal1()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p1-hours-val" style="color:var(--text);font-weight:600;">100%</span></span>
+              <span class="slider-val-display green" id="p1-hours-score">5 pts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYOUT RESULT -->
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Projected Outcome</h3>
+        <div class="payout-box">
+          <h3>Score Breakdown</h3>
+          <div class="payout-line"><span class="label">Merchant Smiley</span><span class="amount" id="p1-r-smiley">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Average Handle Time</span><span class="amount" id="p1-r-aht">5 / 10</span></div>
+          <div class="payout-line"><span class="label">AFTR</span><span class="amount" id="p1-r-aftr">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Valid Live Assist</span><span class="amount" id="p1-r-vla">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Hours Delivery</span><span class="amount" id="p1-r-hours">5 / 5</span></div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <div class="payout-box">
+            <h3>Payout / Penalty Projection</h3>
+            <div class="payout-line"><span class="label">Total Score</span><span class="amount" id="p1-total-score" style="color:var(--green);">25 / 45</span></div>
+            <div class="payout-line"><span class="label">B&amp;P % (New ±10% structure)</span><span class="amount" id="p1-bnp-pct">0%</span></div>
+            <div class="payout-line"><span class="label">Monthly Invoice Basis</span><span class="amount"><input type="number" class="target-input" id="p1-invoice" value="2000000" step="50000" onchange="calcProposal1()" style="width:130px;font-size:13px;"/></span></div>
+          </div>
+        </div>
+
+        <div id="p1-result-box" class="total-payout" style="margin-top:16px;">
+          <div class="total-label">PROJECTED MONTHLY ADJUSTMENT</div>
+          <div class="total-amount" id="p1-result-amount">$0</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px;" id="p1-result-label">Neutral — at passing grade</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 4: PROPOSAL 2                       -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="proposal2">
+  <div class="section-label">Section 03 · Proposal 2</div>
+  <div class="section-title">Split Scorecard: Performance &amp; Quality vs. Operational Efficiency</div>
+  <div class="section-sub">Divide the scorecard into two equal-weighted pillars — Performance &amp; Quality, and Operational Efficiency — each carrying its own bonus/penalty threshold, creating more granular accountability.</div>
+
+  <div class="proposal-section p2">
+    <div class="proposal-header">
+      <div class="proposal-num p2">02</div>
+      <div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.3px;">Dual-Pillar Scorecard</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px;">Each pillar scored independently. Bonus requires both pillars above threshold. Penalty triggered if either pillar falls below.</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:28px;">
+      <div class="card" style="border-color:rgba(99,102,241,0.2);">
+        <div class="card-title" style="color:#818cf8;">Pillar 1 — Performance &amp; Quality</div>
+        <div class="kpi-grid">
+          <div class="kpi-chip"><span class="kpi-chip-dot purple"></span>Merchant Smiley</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot purple"></span>Communication Quality</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot purple"></span>Resolution Quality</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot purple"></span>AFTR</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot purple"></span>Valid Live Assist Rate</div>
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(0,196,140,0.2);">
+        <div class="card-title" style="color:var(--green);">Pillar 2 — Operational Efficiency</div>
+        <div class="kpi-grid">
+          <div class="kpi-chip"><span class="kpi-chip-dot"></span>Average Handle Time (AHT)</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot"></span>Time to Resolve (TTR)</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot"></span>Tickets per Hour (TPH)</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot"></span>Interval Compliance</div>
+          <div class="kpi-chip"><span class="kpi-chip-dot"></span>Hours Delivery</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col-layout">
+      <!-- SLIDERS -->
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:12px;color:#818cf8;text-transform:uppercase;letter-spacing:1px;">Pillar 1: Performance &amp; Quality</h3>
+        <div class="slider-group" style="margin-bottom:24px;">
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Merchant Smiley</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-smiley-target" value="83.33" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p2-smiley" min="62" max="105" step="0.5" value="83.33" oninput="updateSliderDisplay('p2-smiley');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-smiley-val">83.33%</span></span>
+              <span class="slider-val-display green" id="p2-smiley-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Communication Quality</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-commq-target" value="85.00" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p2-commq" min="63" max="107" step="0.5" value="85.00" oninput="updateSliderDisplay('p2-commq');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-commq-val">85.00%</span></span>
+              <span class="slider-val-display green" id="p2-commq-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Resolution Quality</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-resq-target" value="82.00" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p2-resq" min="61" max="103" step="0.5" value="82.00" oninput="updateSliderDisplay('p2-resq');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-resq-val">82.00%</span></span>
+              <span class="slider-val-display green" id="p2-resq-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">AFTR</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-aftr-target" value="86.18" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p2-aftr" min="64" max="108" step="0.5" value="86.18" oninput="updateSliderDisplay('p2-aftr');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-aftr-val">86.18%</span></span>
+              <span class="slider-val-display green" id="p2-aftr-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Valid Live Assist Rate</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-vla-target" value="80.00" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p2-vla" min="60" max="100" step="0.5" value="80.00" oninput="updateSliderDisplay('p2-vla');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-vla-val">80.00%</span></span>
+              <span class="slider-val-display green" id="p2-vla-score">5 pts</span>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:12px;color:var(--green);text-transform:uppercase;letter-spacing:1px;">Pillar 2: Operational Efficiency</h3>
+        <div class="slider-group">
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">AHT (min, lower = better)</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-aht-target" value="33.22" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">min</span>
+              </div>
+            </div>
+            <input type="range" class="red-thumb" id="p2-aht" min="25" max="44" step="0.1" value="33.22" oninput="updateSliderDisplay('p2-aht');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-aht-val">33.22 min</span></span>
+              <span class="slider-val-display green" id="p2-aht-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Time to Resolve (hrs, lower = better)</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-ttr-target" value="24.00" step="0.5" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">hrs</span>
+              </div>
+            </div>
+            <input type="range" class="red-thumb" id="p2-ttr" min="12" max="48" step="0.5" value="24.00" oninput="updateSliderDisplay('p2-ttr');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-ttr-val">24.00 hrs</span></span>
+              <span class="slider-val-display green" id="p2-ttr-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Tickets per Hour (TPH)</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-tph-target" value="3.00" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">tph</span>
+              </div>
+            </div>
+            <input type="range" id="p2-tph" min="1.5" max="5" step="0.1" value="3.00" oninput="updateSliderDisplay('p2-tph');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-tph-val">3.00 tph</span></span>
+              <span class="slider-val-display green" id="p2-tph-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Interval Compliance</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-interval-target" value="90.00" step="0.5" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p2-interval" min="67" max="113" step="0.5" value="90.00" oninput="updateSliderDisplay('p2-interval');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-interval-val">90.00%</span></span>
+              <span class="slider-val-display green" id="p2-interval-score">5 pts</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Hours Delivery</span>
+              <div class="slider-vals">
+                <input type="number" class="target-input" id="p2-hours-target" value="100" step="0.1" onchange="calcProposal2()"/>
+                <span style="font-size:11px;color:var(--muted);">%</span>
+              </div>
+            </div>
+            <input type="range" id="p2-hours" min="75" max="100" step="0.5" value="100" oninput="updateSliderDisplay('p2-hours');calcProposal2()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Projected: <span id="p2-hours-val">100%</span></span>
+              <span class="slider-val-display green" id="p2-hours-score">5 pts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Projected Outcome</h3>
+
+        <div class="payout-box" style="margin-bottom:16px;">
+          <h3 style="color:#818cf8;">P&amp;Q Pillar Score</h3>
+          <div class="payout-line"><span class="label">Merchant Smiley</span><span class="amount" id="p2-r-smiley">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Communication Quality</span><span class="amount" id="p2-r-commq">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Resolution Quality</span><span class="amount" id="p2-r-resq">5 / 10</span></div>
+          <div class="payout-line"><span class="label">AFTR</span><span class="amount" id="p2-r-aftr">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Valid Live Assist</span><span class="amount" id="p2-r-vla">5 / 10</span></div>
+          <div style="display:flex;justify-content:space-between;padding-top:8px;">
+            <span style="font-size:13px;color:var(--muted);">P&amp;Q Total</span>
+            <strong id="p2-pq-total" style="color:#818cf8;">25 / 50</strong>
+          </div>
+        </div>
+
+        <div class="payout-box" style="margin-bottom:16px;">
+          <h3 style="color:var(--green);">Ops Efficiency Pillar Score</h3>
+          <div class="payout-line"><span class="label">AHT</span><span class="amount" id="p2-r-aht">5 / 10</span></div>
+          <div class="payout-line"><span class="label">TTR</span><span class="amount" id="p2-r-ttr">5 / 10</span></div>
+          <div class="payout-line"><span class="label">TPH</span><span class="amount" id="p2-r-tph">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Interval Compliance</span><span class="amount" id="p2-r-interval">5 / 10</span></div>
+          <div class="payout-line"><span class="label">Hours Delivery</span><span class="amount" id="p2-r-hours">5 / 10</span></div>
+          <div style="display:flex;justify-content:space-between;padding-top:8px;">
+            <span style="font-size:13px;color:var(--muted);">Ops Total</span>
+            <strong id="p2-ops-total" style="color:var(--green);">25 / 50</strong>
+          </div>
+        </div>
+
+        <div class="payout-box" style="margin-bottom:16px;">
+          <h3>Combined Payout</h3>
+          <div class="payout-line"><span class="label">P&amp;Q B&amp;P %</span><span class="amount" id="p2-pq-pct">0%</span></div>
+          <div class="payout-line"><span class="label">Ops B&amp;P %</span><span class="amount" id="p2-ops-pct">0%</span></div>
+          <div class="payout-line"><span class="label">Blended Rate</span><span class="amount" id="p2-blended-pct">0%</span></div>
+          <div class="payout-line"><span class="label">Monthly Invoice</span><span class="amount"><input type="number" class="target-input" id="p2-invoice" value="2000000" step="50000" onchange="calcProposal2()" style="width:130px;"/></span></div>
+        </div>
+
+        <div id="p2-result-box" class="total-payout" style="margin-top:0;">
+          <div class="total-label">PROJECTED MONTHLY ADJUSTMENT</div>
+          <div class="total-amount" id="p2-result-amount">$0</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px;" id="p2-result-label">Neutral — both pillars at passing grade</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 5: PROPOSAL 3                       -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="proposal3">
+  <div class="section-label">Section 04 · Proposal 3</div>
+  <div class="section-title">Per-Interaction Incentive &amp; Penalty</div>
+  <div class="section-sub">Reward or penalize each interaction based on adherence to 7 evaluated interaction behaviours. Threshold is meeting 5 of 7. Every interaction above or below threshold generates a micro-incentive or micro-penalty.</div>
+
+  <div class="proposal-section p3">
+    <div class="proposal-header">
+      <div class="proposal-num p3">03</div>
+      <div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.3px;">Interaction-Level Reward &amp; Penalty</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px;">Applied per interaction, per advisor. Creates granular accountability at the individual interaction level.</p>
+      </div>
+    </div>
+
+    <!-- INTERACTION MATRIX -->
+    <h3 style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">Reward &amp; Penalty Matrix</h3>
+    <div class="interaction-grid">
+      <div class="interaction-cell cell-penalty-high">
+        <div class="score">0–2</div>
+        <div class="outcome">of 7</div>
+        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.10</div>
+        <div class="outcome">per interaction</div>
+      </div>
+      <div class="interaction-cell cell-penalty-high">
+        <div class="score">2</div>
+        <div class="outcome">of 7</div>
+        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.10</div>
+        <div class="outcome">per interaction</div>
+      </div>
+      <div class="interaction-cell cell-penalty-low">
+        <div class="score">3</div>
+        <div class="outcome">of 7</div>
+        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.05</div>
+        <div class="outcome">per interaction</div>
+      </div>
+      <div class="interaction-cell cell-penalty-low">
+        <div class="score">4</div>
+        <div class="outcome">of 7</div>
+        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.05</div>
+        <div class="outcome">per interaction</div>
+      </div>
+      <div class="interaction-cell cell-neutral">
+        <div class="score">5</div>
+        <div class="outcome">of 7 ✓</div>
+        <div class="outcome" style="margin-top:6px;font-weight:600;">$0.00</div>
+        <div class="outcome">threshold</div>
+      </div>
+      <div class="interaction-cell cell-bonus-low">
+        <div class="score">6</div>
+        <div class="outcome">of 7</div>
+        <div class="outcome" style="margin-top:6px;font-weight:600;">+$0.05</div>
+        <div class="outcome">per interaction</div>
+      </div>
+      <div class="interaction-cell cell-bonus-high">
+        <div class="score">7</div>
+        <div class="outcome">of 7</div>
+        <div class="outcome" style="margin-top:6px;font-weight:600;">+$0.10</div>
+        <div class="outcome">per interaction</div>
+      </div>
+    </div>
+
+    <!-- BEHAVIOURS -->
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-title">Evaluated Interaction Behaviours (7 Total)</div>
+      <div class="kpi-grid">
+        <div class="kpi-chip"><span class="kpi-chip-dot amber"></span>Context Gathering</div>
+        <div class="kpi-chip"><span class="kpi-chip-dot amber"></span>Voice &amp; Tone</div>
+        <div class="kpi-chip"><span class="kpi-chip-dot amber"></span>Alternative Positioning</div>
+        <div class="kpi-chip"><span class="kpi-chip-dot amber"></span>Clarity &amp; Precision</div>
+        <div class="kpi-chip"><span class="kpi-chip-dot amber"></span>Rapport Building</div>
+        <div class="kpi-chip"><span class="kpi-chip-dot amber"></span>Confident Language</div>
+        <div class="kpi-chip"><span style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;"></span><em style="color:var(--muted);">+ 1 additional behaviour</em></div>
+      </div>
+    </div>
+
+    <!-- PROJECTION CALCULATOR -->
+    <div class="two-col-layout">
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Projection Inputs</h3>
+        <div class="slider-group">
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">Total Monthly Interactions</span>
+            </div>
+            <input type="range" id="p3-total" min="10000" max="500000" step="5000" value="100000" oninput="updateSliderDisplay('p3-total');calcProposal3()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);">Volume: <span id="p3-total-val" style="color:var(--text);font-weight:600;">100,000</span></span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">% Scoring 7/7 (Bonus High)</span>
+            </div>
+            <input type="range" id="p3-pct7" min="0" max="60" step="1" value="10" oninput="updateSliderDisplay('p3-pct7');calcProposal3()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct7-val" style="color:var(--green);font-weight:600;">10%</span> → +$0.10/interaction</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">% Scoring 6/7 (Bonus Low)</span>
+            </div>
+            <input type="range" id="p3-pct6" min="0" max="60" step="1" value="20" oninput="updateSliderDisplay('p3-pct6');calcProposal3()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct6-val" style="color:#5dd9b5;font-weight:600;">20%</span> → +$0.05/interaction</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">% Scoring 5/7 (Neutral)</span>
+            </div>
+            <input type="range" id="p3-pct5" min="0" max="60" step="1" value="30" oninput="updateSliderDisplay('p3-pct5');calcProposal3()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct5-val" style="color:var(--muted);font-weight:600;">30%</span> → $0.00/interaction</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">% Scoring 3–4/7 (Penalty Low)</span>
+            </div>
+            <input type="range" class="red-thumb" id="p3-pct34" min="0" max="60" step="1" value="25" oninput="updateSliderDisplay('p3-pct34');calcProposal3()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct34-val" style="color:#ff8fa3;font-weight:600;">25%</span> → −$0.05/interaction</span>
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span class="slider-name">% Scoring ≤2/7 (Penalty High)</span>
+            </div>
+            <input type="range" class="red-thumb" id="p3-pct2" min="0" max="40" step="1" value="15" oninput="updateSliderDisplay('p3-pct2');calcProposal3()"/>
+            <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct2-val" style="color:var(--red);font-weight:600;">15%</span> → −$0.10/interaction</span>
+            </div>
+          </div>
+        </div>
+        <div id="p3-distribution-warning" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(255,183,3,0.08);border:1px solid rgba(255,183,3,0.2);border-radius:8px;font-size:12px;color:var(--amber);">
+          ⚠ Distribution exceeds 100%. Adjust percentages to ensure totals ≤ 100%.
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Projected Payout</h3>
+
+        <div class="payout-box" style="margin-bottom:16px;">
+          <h3>Interaction Breakdown</h3>
+          <div class="payout-line"><span class="label">7/7 interactions</span><span class="amount" style="color:var(--green);" id="p3-r-7">10,000</span></div>
+          <div class="payout-line"><span class="label">6/7 interactions</span><span class="amount" style="color:#5dd9b5;" id="p3-r-6">20,000</span></div>
+          <div class="payout-line"><span class="label">5/7 (neutral)</span><span class="amount" style="color:var(--muted);" id="p3-r-5">30,000</span></div>
+          <div class="payout-line"><span class="label">3–4/7 interactions</span><span class="amount" style="color:#ff8fa3;" id="p3-r-34">25,000</span></div>
+          <div class="payout-line"><span class="label">≤2/7 interactions</span><span class="amount" style="color:var(--red);" id="p3-r-2">15,000</span></div>
+          <div class="payout-line" style="border:none;"><span class="label" style="font-weight:600;">Remaining (unscored)</span><span class="amount" style="color:var(--muted);" id="p3-r-rem">0</span></div>
+        </div>
+
+        <div class="payout-box" style="margin-bottom:16px;">
+          <h3>Financial Breakdown</h3>
+          <div class="payout-line"><span class="label">Bonus from 7/7</span><span class="amount" style="color:var(--green);" id="p3-f-7">+$1,000</span></div>
+          <div class="payout-line"><span class="label">Bonus from 6/7</span><span class="amount" style="color:#5dd9b5;" id="p3-f-6">+$1,000</span></div>
+          <div class="payout-line"><span class="label">Penalty from 3–4/7</span><span class="amount" style="color:#ff8fa3;" id="p3-f-34">−$1,250</span></div>
+          <div class="payout-line"><span class="label">Penalty from ≤2/7</span><span class="amount" style="color:var(--red);" id="p3-f-2">−$1,500</span></div>
+        </div>
+
+        <div id="p3-result-box" class="total-payout">
+          <div class="total-label">NET MONTHLY INCENTIVE / PENALTY</div>
+          <div class="total-amount" id="p3-result-amount">−$750</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px;" id="p3-result-label">Net penalty based on current distribution</div>
+        </div>
+
+        <div style="margin-top:16px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted);">
+          <strong style="color:var(--text);">Annualized projection:</strong> <span id="p3-annual">−$9,000</span><br/>
+          <strong style="color:var(--text);">Break-even quality rate:</strong> Mix of 6/7 and 7/7 must offset 3/7 and ≤2/7 volume
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- FOOTER -->
+<footer>
+  <p>Prepared by <strong>Mike Vong &amp; Jennifer Routledge</strong> · Vendor Solutions · March 2026</p>
+  <p style="margin-top:6px;">Internal use only — BPO Bonus &amp; Penalty Proposal · bpobnp</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────
+const bpoData = {
+  taskus: {
+    label: 'TaskUs',
+    core: {
+      target: [79, 33.22, 39.90, 85.06, 100],
+      oct:    [75.70, 32.5, 38.82, null, 100],
+      nov:    [73.80, 32.8, 37.94, null, 100],
+      dec:    [79.80, 33.2, 38.74, null, 100],
+      jan:    [79.80, 35.8, 38.36, 84.60, 100],
+      feb:    [77.00, 34.1, 38.07, 84.50, 100],
+      mar:    [78.90, 34.7, 39.15, 83.50, 100],
+      kpis:   ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+      units:  ['%', 'min', '%', '%', '%'],
+      lowerBetter: [false, true, false, false, false],
+    },
+    scoreAvg: 22,
+    bonusMonths: 1,
+    penaltyMonths: 4,
+  },
+  intouchcx: {
+    label: 'InTouchCX',
+    core: {
+      target: [80, 33.22, 40.00, 85.06, 100],
+      oct:    [76.34, 33.8, 37.91, null, 100],
+      nov:    [75.19, 33.4, 35.77, null, 100],
+      dec:    [79.37, 34.6, 36.69, null, 100],
+      jan:    [77.92, 35.8, 36.59, 85.70, 100],
+      feb:    [77.58, 35.2, 36.86, 84.80, 100],
+      mar:    [79.22, 36.4, 39.29, 84.20, 100],
+      kpis:   ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+      units:  ['%', 'min', '%', '%', '%'],
+      lowerBetter: [false, true, false, false, false],
+    },
+    scoreAvg: 19,
+    bonusMonths: 0,
+    penaltyMonths: 6,
+  },
+  telus: {
+    label: 'TELUS',
+    core: {
+      target: [80, 33.22, 40.00, 85.06, 100],
+      oct:    [56.50, 42.9, 29.88, null, 100],
+      nov:    [60.10, 34.8, 34.93, null, 100],
+      dec:    [68.60, 32.6, 37.40, null, 100],
+      jan:    [66.20, 35.4, 33.20, 84.20, 100],
+      feb:    [65.30, 36.0, 33.46, 84.00, 100],
+      mar:    [70.50, 38.4, 34.45, 83.50, 100],
+      kpis:   ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+      units:  ['%', 'min', '%', '%', '%'],
+      lowerBetter: [false, true, false, false, false],
+    },
+    scoreAvg: 16,
+    bonusMonths: 0,
+    penaltyMonths: 6,
+  },
+  overall: {
+    label: 'Overall (All BPOs)',
+    core: {
+      target: [80, 33.22, 40.00, 85.06, 100],
+      oct:    [69.5, 36.4, 35.5, null, 100],
+      nov:    [69.7, 33.7, 36.2, null, 100],
+      dec:    [75.9, 33.5, 37.6, null, 100],
+      jan:    [74.6, 35.7, 36.1, 84.8, 100],
+      feb:    [73.3, 35.1, 36.1, 84.4, 100],
+      mar:    [76.2, 36.5, 37.6, 83.7, 100],
+      kpis:   ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+      units:  ['%', 'min', '%', '%', '%'],
+      lowerBetter: [false, true, false, false, false],
+    },
+    scoreAvg: 19,
+    bonusMonths: 1,
+    penaltyMonths: 5,
+  }
+};
+
+// ─── HISTORICAL CHART ─────────────────────────────────────────────────
+let histChart;
+
+function initHistChart(bpoKey) {
+  const d = bpoData[bpoKey].core;
+  const months = ['Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25'];
+  const actuals = [d.oct[0], d.nov[0], d.dec[0], d.jan[0], d.feb[0], d.mar[0]];
+  const targets = Array(6).fill(d.target[0]);
+
+  const ctx = document.getElementById('historicalChart').getContext('2d');
+  if (histChart) histChart.destroy();
+
+  histChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Overall Smiley (Actual)',
+          data: actuals,
+          borderColor: '#00c48c',
+          backgroundColor: 'rgba(0,196,140,0.08)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 5,
+          pointBackgroundColor: '#00c48c',
+        },
+        {
+          label: 'Smiley Target',
+          data: targets,
+          borderColor: 'rgba(255,255,255,0.25)',
+          borderDash: [6,4],
+          fill: false,
+          tension: 0,
+          pointRadius: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#7a9ab5', font: { family: 'DM Sans' } } },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7a9ab5' } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7a9ab5', callback: v => v + '%' }, min: 50, max: 95 }
+      }
+    }
+  });
+}
+
+function selectBPO(key, btn) {
+  document.querySelectorAll('.bpo-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const d = bpoData[key];
+  document.getElementById('h-avg-score').textContent = d.scoreAvg + ' pts';
+  document.getElementById('h-bonus-months').textContent = d.bonusMonths;
+  document.getElementById('h-penalty-months').textContent = d.penaltyMonths;
+  const net = d.bonusMonths > d.penaltyMonths ? 'Net Bonus' : d.penaltyMonths > d.bonusMonths ? 'Net Penalty' : 'Neutral';
+  document.getElementById('h-net-outcome').textContent = net;
+
+  const netEl = document.getElementById('h-net-outcome');
+  netEl.className = 'value';
+  if (net === 'Net Bonus') netEl.classList.add('green');
+  else if (net === 'Net Penalty') netEl.classList.add('red');
+  else netEl.classList.add('amber');
+
+  document.getElementById('chart-title').textContent = d.label + ' — Overall Smiley vs. Target (Oct 2024 – Mar 2025)';
+  document.getElementById('table-bpo-title').textContent = d.label + ' — Monthly KPI Results (Core LOB)';
+
+  // Populate table
+  const tbody = document.getElementById('historicalTableBody');
+  const core = d.core;
+  const months = ['oct','nov','dec','jan','feb','mar'];
+  tbody.innerHTML = '';
+  core.kpis.forEach((kpi, i) => {
+    const tr = document.createElement('tr');
+    const tgt = core.target[i];
+    let cells = `<td>${kpi}</td><td>${tgt}${core.units[i]}</td>`;
+    months.forEach(m => {
+      const v = core[m][i];
+      if (v === null) { cells += `<td style="color:var(--muted);">N/A</td>`; return; }
+      const isGood = core.lowerBetter[i] ? v <= tgt : v >= tgt;
+      const cls = isGood ? 'color:var(--green)' : 'color:var(--red)';
+      cells += `<td style="${cls}">${v}${core.units[i]}</td>`;
+    });
+    tr.innerHTML = cells;
+    tbody.appendChild(tr);
+  });
+
+  initHistChart(key);
+}
+
+// ─── PROPOSAL 1 SCORING ──────────────────────────────────────────────
+// Score KPI: linear scale, floor=75% of target, ceiling=125%, 0-10 pts
+function scoreKPI(actual, target, lowerBetter = false, maxPts = 10) {
+  const floor = target * 0.75;
+  const ceiling = target * 1.25;
+  let ratio;
+  if (lowerBetter) {
+    // lower actual = better. At target = 5, at floor (75% = really good) = 10, at ceiling (125% = bad) = 0
+    ratio = (ceiling - actual) / (ceiling - floor);
+  } else {
+    ratio = (actual - floor) / (ceiling - floor);
+  }
+  ratio = Math.max(0, Math.min(1, ratio));
+  return Math.round(ratio * maxPts);
+}
+
+// Map score to B&P % for ±10% scale (50-pt total)
+function scoreToBnP10(score, maxScore) {
+  // -10% at 0, 0% at 50%, +10% at max
+  const pct = score / maxScore;
+  if (pct < 0.5) return Math.round((pct - 0.5) * 20); // maps 0→-10, 0.5→0
+  return Math.round((pct - 0.5) * 20); // maps 0.5→0, 1→+10
+}
+
+// Map total score (0-45) to B&P % for ±5% Core scale
+function scoreToBnP5_45(score) {
+  const scale = [-5,-5,-4,-3,-2,-1,0,1,2,3,4,5,5];
+  const points = [0,8,12,16,20,24,25,26,30,34,38,42,45];
+  for (let i = points.length-1; i >= 0; i--) {
+    if (score >= points[i]) return scale[i];
+  }
+  return -5;
+}
+
+// Map total score (0-45) to B&P % for ±10% new proposal
+function scoreToBnP10_45(score) {
+  // same thresholds as Core Premium
+  const scale = [-10,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,10];
+  const points = [0,6,8,10,12,14,16,18,20,22,24,25,26,28,30,32,34,36,38,40,42,44,45];
+  for (let i = points.length-1; i >= 0; i--) {
+    if (score >= points[i]) return scale[i];
+  }
+  return -10;
+}
+
+function updateSliderDisplay(id) {
+  const slider = document.getElementById(id);
+  const val = parseFloat(slider.value);
+  const display = document.getElementById(id + '-val');
+  if (!display) return;
+  if (id.includes('aht') || id.includes('ttr')) {
+    display.textContent = val.toFixed(2) + (id.includes('ttr') ? ' hrs' : ' min');
+  } else if (id.includes('tph')) {
+    display.textContent = val.toFixed(2) + ' tph';
+  } else if (id === 'p3-total') {
+    display.textContent = val.toLocaleString();
+  } else if (id.startsWith('p3-pct')) {
+    display.textContent = val + '%';
+  } else {
+    display.textContent = val.toFixed(2) + '%';
+  }
+}
+
+function calcProposal1() {
+  const smileyTarget = parseFloat(document.getElementById('p1-smiley-target').value) || 83.33;
+  const ahtTarget = parseFloat(document.getElementById('p1-aht-target').value) || 33.22;
+  const aftrTarget = parseFloat(document.getElementById('p1-aftr-target').value) || 86.18;
+  const vlaTarget = parseFloat(document.getElementById('p1-vla-target').value) || 80.00;
+  const hoursTarget = parseFloat(document.getElementById('p1-hours-target').value) || 100;
+
+  const smiley = parseFloat(document.getElementById('p1-smiley').value);
+  const aht = parseFloat(document.getElementById('p1-aht').value);
+  const aftr = parseFloat(document.getElementById('p1-aftr').value);
+  const vla = parseFloat(document.getElementById('p1-vla').value);
+  const hours = parseFloat(document.getElementById('p1-hours').value);
+
+  const s1 = scoreKPI(smiley, smileyTarget, false, 10);
+  const s2 = scoreKPI(aht, ahtTarget, true, 10);
+  const s3 = scoreKPI(aftr, aftrTarget, false, 10);
+  const s4 = scoreKPI(vla, vlaTarget, false, 10);
+  const s5 = scoreKPI(hours, hoursTarget, false, 5);
+
+  const total = s1 + s2 + s3 + s4 + s5;
+  const bnp = scoreToBnP10_45(total);
+  const invoice = parseFloat(document.getElementById('p1-invoice').value) || 2000000;
+  const adjustment = invoice * (bnp / 100);
+
+  document.getElementById('p1-smiley-score').textContent = s1 + ' pts';
+  document.getElementById('p1-aht-score').textContent = s2 + ' pts';
+  document.getElementById('p1-aftr-score').textContent = s3 + ' pts';
+  document.getElementById('p1-vla-score').textContent = s4 + ' pts';
+  document.getElementById('p1-hours-score').textContent = s5 + ' pts';
+
+  document.getElementById('p1-r-smiley').textContent = s1 + ' / 10';
+  document.getElementById('p1-r-aht').textContent = s2 + ' / 10';
+  document.getElementById('p1-r-aftr').textContent = s3 + ' / 10';
+  document.getElementById('p1-r-vla').textContent = s4 + ' / 10';
+  document.getElementById('p1-r-hours').textContent = s5 + ' / 5';
+
+  const totalEl = document.getElementById('p1-total-score');
+  totalEl.textContent = total + ' / 45';
+  totalEl.style.color = bnp > 0 ? 'var(--green)' : bnp < 0 ? 'var(--red)' : 'var(--amber)';
+
+  document.getElementById('p1-bnp-pct').textContent = (bnp >= 0 ? '+' : '') + bnp + '%';
+
+  const resultBox = document.getElementById('p1-result-box');
+  const amountEl = document.getElementById('p1-result-amount');
+  const labelEl = document.getElementById('p1-result-label');
+
+  const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  amountEl.textContent = (adjustment >= 0 ? '+' : '') + fmt.format(adjustment);
+
+  if (adjustment > 0) {
+    resultBox.className = 'total-payout';
+    amountEl.style.color = 'var(--green)';
+    labelEl.textContent = 'Bonus applied on LOB invoice';
+  } else if (adjustment < 0) {
+    resultBox.className = 'total-payout penalty-box';
+    amountEl.style.color = 'var(--red)';
+    labelEl.textContent = 'Penalty applied on LOB invoice';
+  } else {
+    resultBox.className = 'total-payout';
+    amountEl.style.color = 'var(--amber)';
+    labelEl.textContent = 'Neutral — at passing grade';
+  }
+
+  // colour kpi score badges
+  [['p1-smiley-score',s1,10],['p1-aht-score',s2,10],['p1-aftr-score',s3,10],['p1-vla-score',s4,10],['p1-hours-score',s5,5]].forEach(([id, s, max]) => {
+    const el = document.getElementById(id);
+    el.className = 'slider-val-display';
+    if (s >= max * 0.7) el.classList.add('green');
+    else if (s < max * 0.4) el.classList.add('red');
+    else el.className = 'slider-val-display';
+    el.style.color = s >= max * 0.7 ? 'var(--green)' : s < max * 0.4 ? 'var(--red)' : 'var(--amber)';
+  });
+}
+
+function calcProposal2() {
+  const targets = {
+    smiley: parseFloat(document.getElementById('p2-smiley-target').value) || 83.33,
+    commq:  parseFloat(document.getElementById('p2-commq-target').value) || 85.00,
+    resq:   parseFloat(document.getElementById('p2-resq-target').value) || 82.00,
+    aftr:   parseFloat(document.getElementById('p2-aftr-target').value) || 86.18,
+    vla:    parseFloat(document.getElementById('p2-vla-target').value) || 80.00,
+    aht:    parseFloat(document.getElementById('p2-aht-target').value) || 33.22,
+    ttr:    parseFloat(document.getElementById('p2-ttr-target').value) || 24.00,
+    tph:    parseFloat(document.getElementById('p2-tph-target').value) || 3.00,
+    interval: parseFloat(document.getElementById('p2-interval-target').value) || 90.00,
+    hours:  parseFloat(document.getElementById('p2-hours-target').value) || 100,
+  };
+
+  const vals = {
+    smiley: parseFloat(document.getElementById('p2-smiley').value),
+    commq:  parseFloat(document.getElementById('p2-commq').value),
+    resq:   parseFloat(document.getElementById('p2-resq').value),
+    aftr:   parseFloat(document.getElementById('p2-aftr').value),
+    vla:    parseFloat(document.getElementById('p2-vla').value),
+    aht:    parseFloat(document.getElementById('p2-aht').value),
+    ttr:    parseFloat(document.getElementById('p2-ttr').value),
+    tph:    parseFloat(document.getElementById('p2-tph').value),
+    interval: parseFloat(document.getElementById('p2-interval').value),
+    hours:  parseFloat(document.getElementById('p2-hours').value),
+  };
+
+  const scores = {
+    smiley: scoreKPI(vals.smiley, targets.smiley, false, 10),
+    commq:  scoreKPI(vals.commq, targets.commq, false, 10),
+    resq:   scoreKPI(vals.resq, targets.resq, false, 10),
+    aftr:   scoreKPI(vals.aftr, targets.aftr, false, 10),
+    vla:    scoreKPI(vals.vla, targets.vla, false, 10),
+    aht:    scoreKPI(vals.aht, targets.aht, true, 10),
+    ttr:    scoreKPI(vals.ttr, targets.ttr, true, 10),
+    tph:    scoreKPI(vals.tph, targets.tph, false, 10),
+    interval: scoreKPI(vals.interval, targets.interval, false, 10),
+    hours:  scoreKPI(vals.hours, targets.hours, false, 10),
+  };
+
+  const pqTotal = scores.smiley + scores.commq + scores.resq + scores.aftr + scores.vla;
+  const opsTotal = scores.aht + scores.ttr + scores.tph + scores.interval + scores.hours;
+  const combined = pqTotal + opsTotal;
+
+  // Each pillar max = 50, bonus/penalty 0-10% per pillar
+  const pqBnP = scoreToBnP10_45(Math.round(pqTotal * 45 / 50));
+  const opsBnP = scoreToBnP10_45(Math.round(opsTotal * 45 / 50));
+  const blended = (pqBnP + opsBnP) / 2;
+
+  const invoice = parseFloat(document.getElementById('p2-invoice').value) || 2000000;
+  const adjustment = invoice * (blended / 100);
+  const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+  // Update scores display
+  const kpis = ['smiley','commq','resq','aftr','vla','aht','ttr','tph','interval','hours'];
+  kpis.forEach(k => {
+    const el = document.getElementById(`p2-r-${k}`);
+    if (el) el.textContent = scores[k] + ' / 10';
+  });
+
+  document.getElementById('p2-pq-total').textContent = pqTotal + ' / 50';
+  document.getElementById('p2-ops-total').textContent = opsTotal + ' / 50';
+  document.getElementById('p2-pq-pct').textContent = (pqBnP >= 0 ? '+' : '') + pqBnP + '%';
+  document.getElementById('p2-ops-pct').textContent = (opsBnP >= 0 ? '+' : '') + opsBnP + '%';
+  document.getElementById('p2-blended-pct').textContent = (blended >= 0 ? '+' : '') + blended.toFixed(1) + '%';
+
+  // Slider score updates
+  const sliderScores = {
+    'p2-smiley-score': scores.smiley,
+    'p2-commq-score': scores.commq,
+    'p2-resq-score': scores.resq,
+    'p2-aftr-score': scores.aftr,
+    'p2-vla-score': scores.vla,
+    'p2-aht-score': scores.aht,
+    'p2-ttr-score': scores.ttr,
+    'p2-tph-score': scores.tph,
+    'p2-interval-score': scores.interval,
+    'p2-hours-score': scores.hours,
+  };
+  Object.entries(sliderScores).forEach(([id, s]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = s + ' pts';
+      el.style.color = s >= 7 ? 'var(--green)' : s < 4 ? 'var(--red)' : 'var(--amber)';
+    }
+  });
+
+  const resultBox = document.getElementById('p2-result-box');
+  const amountEl = document.getElementById('p2-result-amount');
+  const labelEl = document.getElementById('p2-result-label');
+  amountEl.textContent = (adjustment >= 0 ? '+' : '') + fmt.format(adjustment);
+  if (adjustment > 0) {
+    resultBox.className = 'total-payout';
+    amountEl.style.color = 'var(--green)';
+    labelEl.textContent = 'Combined bonus — both pillars above threshold';
+  } else if (adjustment < 0) {
+    resultBox.className = 'total-payout penalty-box';
+    amountEl.style.color = 'var(--red)';
+    labelEl.textContent = 'Combined penalty — one or both pillars below threshold';
+  } else {
+    resultBox.className = 'total-payout';
+    amountEl.style.color = 'var(--amber)';
+    labelEl.textContent = 'Neutral — both pillars at passing grade';
+  }
+}
+
+function calcProposal3() {
+  const total = parseInt(document.getElementById('p3-total').value);
+  const pct7 = parseInt(document.getElementById('p3-pct7').value) / 100;
+  const pct6 = parseInt(document.getElementById('p3-pct6').value) / 100;
+  const pct5 = parseInt(document.getElementById('p3-pct5').value) / 100;
+  const pct34 = parseInt(document.getElementById('p3-pct34').value) / 100;
+  const pct2 = parseInt(document.getElementById('p3-pct2').value) / 100;
+
+  const totalPct = pct7 + pct6 + pct5 + pct34 + pct2;
+  const warning = document.getElementById('p3-distribution-warning');
+  warning.style.display = totalPct > 1.001 ? 'block' : 'none';
+
+  const n7  = Math.round(total * pct7);
+  const n6  = Math.round(total * pct6);
+  const n5  = Math.round(total * pct5);
+  const n34 = Math.round(total * pct34);
+  const n2  = Math.round(total * pct2);
+  const rem = Math.max(0, total - n7 - n6 - n5 - n34 - n2);
+
+  const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  const fmtN = n => n.toLocaleString();
+
+  document.getElementById('p3-r-7').textContent = fmtN(n7);
+  document.getElementById('p3-r-6').textContent = fmtN(n6);
+  document.getElementById('p3-r-5').textContent = fmtN(n5);
+  document.getElementById('p3-r-34').textContent = fmtN(n34);
+  document.getElementById('p3-r-2').textContent = fmtN(n2);
+  document.getElementById('p3-r-rem').textContent = fmtN(rem);
+
+  const b7 = n7 * 0.10;
+  const b6 = n6 * 0.05;
+  const p34 = n34 * 0.05;
+  const p2 = n2 * 0.10;
+  const net = b7 + b6 - p34 - p2;
+
+  document.getElementById('p3-f-7').textContent = '+' + fmt.format(b7);
+  document.getElementById('p3-f-6').textContent = '+' + fmt.format(b6);
+  document.getElementById('p3-f-34').textContent = '−' + fmt.format(p34);
+  document.getElementById('p3-f-2').textContent = '−' + fmt.format(p2);
+
+  const resultBox = document.getElementById('p3-result-box');
+  const amountEl = document.getElementById('p3-result-amount');
+  const labelEl = document.getElementById('p3-result-label');
+  amountEl.textContent = (net >= 0 ? '+' : '−') + fmt.format(Math.abs(net));
+
+  if (net > 0) {
+    resultBox.className = 'total-payout';
+    amountEl.style.color = 'var(--green)';
+    labelEl.textContent = 'Net incentive payout based on current distribution';
+  } else if (net < 0) {
+    resultBox.className = 'total-payout penalty-box';
+    amountEl.style.color = 'var(--red)';
+    labelEl.textContent = 'Net penalty based on current distribution';
+  } else {
+    resultBox.className = 'total-payout';
+    amountEl.style.color = 'var(--amber)';
+    labelEl.textContent = 'Neutral — bonuses and penalties balance out';
+  }
+
+  document.getElementById('p3-annual').textContent = (net >= 0 ? '+' : '−') + fmt.format(Math.abs(net * 12));
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  selectBPO('taskus', document.querySelector('.bpo-tab.active'));
+  calcProposal1();
+  calcProposal2();
+  calcProposal3();
+});
+</script>
+</body>
+</html>
