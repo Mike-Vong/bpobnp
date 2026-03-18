@@ -459,6 +459,34 @@
       font-weight: 600;
     }
 
+    /* LOB TABS */
+    .lob-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+      margin-top: -12px;
+      flex-wrap: wrap;
+    }
+    .lob-tab {
+      padding: 5px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lob-tab:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .lob-tab.active {
+      background: rgba(255,183,3,0.15);
+      border-color: var(--amber);
+      color: var(--amber);
+      font-weight: 600;
+    }
+
     /* PROPOSAL SECTION WRAPPERS */
     .proposal-section {
       border: 1px solid var(--border);
@@ -652,7 +680,13 @@
   <div class="bpo-tabs">
     <button class="bpo-tab active" onclick="selectBPO('taskus', this)">TaskUs</button>
     <button class="bpo-tab" onclick="selectBPO('telus', this)">TELUS</button>
-    <button class="bpo-tab" onclick="selectBPO('overall', this)">Overall View</button>
+  </div>
+  <!-- LOB SELECTOR -->
+  <div class="lob-tabs">
+    <button class="lob-tab active" onclick="selectLOB('core', this)">Core</button>
+    <button class="lob-tab" onclick="selectLOB('corepremium', this)">Core Premium</button>
+    <button class="lob-tab" onclick="selectLOB('retail', this)">Retail</button>
+    <button class="lob-tab" onclick="selectLOB('plus', this)">Plus</button>
   </div>
 
   <!-- SUMMARY STATS (dynamically updated) -->
@@ -1479,72 +1513,138 @@
 <!-- JAVASCRIPT                                  -->
 <!-- ═══════════════════════════════════════════ -->
 <script>
+// ─── STATE ────────────────────────────────────────────────────────────
+let currentBPO = 'taskus';
+let currentLOB = 'core';
+
 // ─── DATA ─────────────────────────────────────────────────────────────
 const bpoData = {
   taskus: {
     label: 'TaskUs',
-    core: {
-      target: [79, 33.22, 39.90, 85.06, 100],
-      oct:    [75.70, 32.5, 38.82, null, 100],
-      nov:    [73.80, 32.8, 37.94, null, 100],
-      dec:    [79.80, 33.2, 38.74, null, 100],
-      jan:    [79.80, 35.8, 38.36, 84.60, 100],
-      feb:    [77.00, 34.1, 38.07, 84.50, 100],
-      mar:    [78.90, 34.7, 39.15, 83.50, 100],
-      kpis:   ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
-      units:  ['%', 'min', '%', '%', '%'],
-      lowerBetter: [false, true, false, false, false],
+    lobs: {
+      core: {
+        label: 'Core',
+        target: [80, 33.22, 40.00, 85.06, 100],
+        oct:   [75.70, 32.5, 38.82, null, 100],
+        nov:   [73.80, 32.8, 37.94, null, 100],
+        dec:   [79.80, 33.2, 38.74, null, 100],
+        jan:   [79.80, 35.8, 38.36, 84.60, 100],
+        feb:   [77.00, 34.1, 38.07, 84.50, 100],
+        mar:   [78.90, 34.7, 39.15, 83.50, 100],
+        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
+      },
+      corepremium: {
+        label: 'Core Premium',
+        target: [81.69, 31.44, 42.59, 85.06, 100],
+        oct:   [78.20, 34, 38.66, null, 100],
+        nov:   [80.20, 31.2, 40.37, null, 100],
+        dec:   [84.40, 32.7, 41.88, null, 100],
+        jan:   [85.20, 33.2, 41.06, 84.90, 100],
+        feb:   [78.50, 32.9, 42.38, 84.40, 100],
+        mar:   [83.30, 34.6, 44.46, 82.60, 100],
+        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
+      },
+      retail: {
+        label: 'Retail',
+        target: [86, 26.9, 22, 41.23, 85.06, 100],
+        oct:   [79.40, 30.5, 23.60, 37.43, null, 100],
+        nov:   [82.80, 31.9, 23.80, 39.22, null, 100],
+        dec:   [86.70, 33.4, 22.60, 42.65, null, 100],
+        jan:   [83.20, 33.6, 24.00, 39.00, 81.80, 100],
+        feb:   [84.40, 33.6, 23.70, 36.01, 80.10, 100],
+        mar:   [80.40, 33.6, 22.70, 35.29, 84.40, 100],
+        kpis:  ['Overall Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, true, false, false, false],
+      },
+      plus: {
+        label: 'Plus',
+        target: [83, 86, 29.1, 21.5, 38.46, 85.06, 100],
+        oct:   [80.21, 83.44, 32.3, 21.80, 40.00, null, 100],
+        nov:   [79.90, 73.72, 31, 22.00, 38.15, null, 100],
+        dec:   [79.45, 69.92, 32.3, 21.90, 34.59, null, 100],
+        jan:   [78.44, 72.08, 36.2, 22.40, 34.13, 86.20, 100],
+        feb:   [81.64, 80.84, 35.9, 23.70, 36.22, 87.10, 100],
+        mar:   [84.16, 77.48, 36.4, 22.50, 37.00, 87.30, 100],
+        kpis:  ['Chat Smiley', 'Phone Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', '%', 'min', 'min', '%', '%', '%'],
+        lowerBetter: [false, false, true, true, false, false, false],
+      },
     },
-    scoreAvg: 22,
-    bonusMonths: 1,
-    penaltyMonths: 4,
   },
   telus: {
     label: 'TELUS',
-    core: {
-      target: [80, 33.22, 40.00, 85.06, 100],
-      oct:    [56.50, 42.9, 29.88, null, 100],
-      nov:    [60.10, 34.8, 34.93, null, 100],
-      dec:    [68.60, 32.6, 37.40, null, 100],
-      jan:    [66.20, 35.4, 33.20, 84.20, 100],
-      feb:    [65.30, 36.0, 33.46, 84.00, 100],
-      mar:    [70.50, 38.4, 34.45, 83.50, 100],
-      kpis:   ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
-      units:  ['%', 'min', '%', '%', '%'],
-      lowerBetter: [false, true, false, false, false],
+    lobs: {
+      core: {
+        label: 'Core',
+        target: [80, 33.22, 40.00, 85.06, 100],
+        oct:   [56.50, 42.9, 29.88, null, 100],
+        nov:   [60.10, 34.8, 34.93, null, 100],
+        dec:   [68.60, 32.6, 37.40, null, 100],
+        jan:   [66.20, 35.4, 33.20, 84.20, 100],
+        feb:   [65.30, 36.0, 33.46, 84.00, 100],
+        mar:   [70.50, 38.4, 34.45, 83.50, 100],
+        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
+      },
+      corepremium: {
+        label: 'Core Premium',
+        target: [81.69, 31.44, 42.59, 85.06, 100],
+        oct:   [69.20, 35.2, 34.46, null, 100],
+        nov:   [68.40, 34.5, 38.20, null, 100],
+        dec:   [77.70, 34.5, 42.33, null, 100],
+        jan:   [75.90, 35.5, 37.50, 85.50, 100],
+        feb:   [76.40, 34.8, 39.39, 85.70, 100],
+        mar:   [77.80, 39.2, 36.78, 84.20, 100],
+        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
+      },
+      retail: {
+        label: 'Retail',
+        target: [86, 26.9, 22, 41.23, 85.06, 100],
+        oct:   [72.30, 27.4, 21.7, 35.43, null, 76.60],
+        nov:   [73.20, 30.2, 20.8, 35.76, null, 100],
+        dec:   [86.50, 30.6, 19.2, 32.75, null, 100],
+        jan:   [82.40, 32.7, 20.6, 38.81, 81.10, 100],
+        feb:   [84.70, 34.6, 22.4, 41.43, 79.20, 100],
+        mar:   [82.70, 33.5, 20.5, 37.94, 82.60, 100],
+        kpis:  ['Overall Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, true, false, false, false],
+      },
+      plus: {
+        label: 'Plus',
+        target: [83, 86, 29.1, 21.5, 38.46, 85.06, 100],
+        oct:   [71.20, 76.4, 37, 20.2, 34.83, null, 100],
+        nov:   [72.28, 82.18, 35.4, 22.3, 35.88, null, 94.40],
+        dec:   [74.70, 84.30, 35.4, 21.3, 35.09, null, 100],
+        jan:   [74.21, 78.95, 38.5, 22.4, 34.64, 87.50, 100],
+        feb:   [77.47, 87.04, 39.5, 22.5, 36.17, 87.90, 100],
+        mar:   [78.80, 81.91, 40.7, 21.7, 38.56, 89.30, 100],
+        kpis:  ['Chat Smiley', 'Phone Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        units: ['%', '%', 'min', 'min', '%', '%', '%'],
+        lowerBetter: [false, false, true, true, false, false, false],
+      },
     },
-    scoreAvg: 16,
-    bonusMonths: 0,
-    penaltyMonths: 6,
   },
-  overall: {
-    label: 'Overall (TaskUs & TELUS)',
-    core: {
-      target: [80, 33.22, 40.00, 85.06, 100],
-      oct:    [66.1, 37.7, 34.4, null, 100],
-      nov:    [67.0, 33.8, 36.4, null, 100],
-      dec:    [74.2, 32.9, 38.1, null, 100],
-      jan:    [73.0, 35.6, 35.8, 84.4, 100],
-      feb:    [71.2, 35.1, 35.8, 84.3, 100],
-      mar:    [74.7, 36.6, 36.8, 83.5, 100],
-      kpis:   ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
-      units:  ['%', 'min', '%', '%', '%'],
-      lowerBetter: [false, true, false, false, false],
-    },
-    scoreAvg: 19,
-    bonusMonths: 0,
-    penaltyMonths: 6,
-  }
 };
 
 // ─── HISTORICAL CHART ─────────────────────────────────────────────────
 let histChart;
 
-function initHistChart(bpoKey) {
-  const d = bpoData[bpoKey].core;
+function initHistChart(bpoKey, lobKey) {
+  const lob = bpoData[bpoKey].lobs[lobKey];
   const months = ['Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25'];
-  const actuals = [d.oct[0], d.nov[0], d.dec[0], d.jan[0], d.feb[0], d.mar[0]];
-  const targets = Array(6).fill(d.target[0]);
+  const actuals = ['oct','nov','dec','jan','feb','mar'].map(m => lob[m][0]);
+  const targets = Array(6).fill(lob.target[0]);
+  const minVal = Math.max(40, Math.floor(Math.min(...actuals.filter(v => v !== null)) / 5) * 5 - 5);
+  const maxVal = Math.min(100, Math.ceil(Math.max(...actuals.filter(v => v !== null), lob.target[0]) / 5) * 5 + 5);
 
   const ctx = document.getElementById('historicalChart').getContext('2d');
   if (histChart) histChart.destroy();
@@ -1555,7 +1655,7 @@ function initHistChart(bpoKey) {
       labels: months,
       datasets: [
         {
-          label: 'Overall Smiley (Actual)',
+          label: lob.kpis[0] + ' (Actual)',
           data: actuals,
           borderColor: '#00c48c',
           backgroundColor: 'rgba(0,196,140,0.08)',
@@ -1565,7 +1665,7 @@ function initHistChart(bpoKey) {
           pointBackgroundColor: '#00c48c',
         },
         {
-          label: 'Smiley Target',
+          label: 'Target',
           data: targets,
           borderColor: 'rgba(255,255,255,0.25)',
           borderDash: [6,4],
@@ -1584,53 +1684,102 @@ function initHistChart(bpoKey) {
       },
       scales: {
         x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7a9ab5' } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7a9ab5', callback: v => v + '%' }, min: 50, max: 95 }
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7a9ab5', callback: v => v + '%' }, min: minVal, max: maxVal }
       }
     }
   });
 }
 
-function selectBPO(key, btn) {
-  document.querySelectorAll('.bpo-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+// ─── DYNAMIC STATS ────────────────────────────────────────────────────
+function computeStats(bpoKey, lobKey) {
+  const lob = bpoData[bpoKey].lobs[lobKey];
+  const monthKeys = ['oct','nov','dec','jan','feb','mar'];
+  let bonusMonths = 0, penaltyMonths = 0, scoreSum = 0, scoredMonths = 0;
 
-  const d = bpoData[key];
-  document.getElementById('h-avg-score').textContent = d.scoreAvg + ' pts';
-  document.getElementById('h-bonus-months').textContent = d.bonusMonths;
-  document.getElementById('h-penalty-months').textContent = d.penaltyMonths;
-  const net = d.bonusMonths > d.penaltyMonths ? 'Net Bonus' : d.penaltyMonths > d.bonusMonths ? 'Net Penalty' : 'Neutral';
+  monthKeys.forEach(m => {
+    const data = lob[m];
+    let total = 0, maxPossible = 0;
+    data.forEach((val, i) => {
+      if (val === null) return;
+      const isHours = i === lob.kpis.length - 1;
+      const maxPts = isHours ? 5 : 10;
+      total += scoreKPI(val, lob.target[i], lob.lowerBetter[i], maxPts);
+      maxPossible += maxPts;
+    });
+    if (maxPossible === 0) return;
+    const scaled = Math.round(total * 45 / maxPossible);
+    scoreSum += scaled;
+    scoredMonths++;
+    if (scaled >= 26) bonusMonths++;
+    else if (scaled <= 24) penaltyMonths++;
+  });
+
+  return {
+    scoreAvg: scoredMonths > 0 ? Math.round(scoreSum / scoredMonths) : 0,
+    bonusMonths,
+    penaltyMonths,
+  };
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────
+function renderHistorical() {
+  const bpoKey = currentBPO;
+  const lobKey = currentLOB;
+  const bpo = bpoData[bpoKey];
+  const lob = bpo.lobs[lobKey];
+  const stats = computeStats(bpoKey, lobKey);
+
+  document.getElementById('h-avg-score').textContent = stats.scoreAvg + ' pts';
+  document.getElementById('h-bonus-months').textContent = stats.bonusMonths;
+  document.getElementById('h-penalty-months').textContent = stats.penaltyMonths;
+  const net = stats.bonusMonths > stats.penaltyMonths ? 'Net Bonus'
+            : stats.penaltyMonths > stats.bonusMonths ? 'Net Penalty' : 'Neutral';
   document.getElementById('h-net-outcome').textContent = net;
-
   const netEl = document.getElementById('h-net-outcome');
   netEl.className = 'value';
   if (net === 'Net Bonus') netEl.classList.add('green');
   else if (net === 'Net Penalty') netEl.classList.add('red');
   else netEl.classList.add('amber');
 
-  document.getElementById('chart-title').textContent = d.label + ' — Overall Smiley vs. Target (Oct 2024 – Mar 2025)';
-  document.getElementById('table-bpo-title').textContent = d.label + ' — Monthly KPI Results (Core LOB)';
+  document.getElementById('chart-title').textContent =
+    `${bpo.label} ${lob.label} — ${lob.kpis[0]} vs. Target (Oct 2024 – Mar 2025)`;
+  document.getElementById('table-bpo-title').textContent =
+    `${bpo.label} — Monthly KPI Results (${lob.label})`;
 
   // Populate table
   const tbody = document.getElementById('historicalTableBody');
-  const core = d.core;
-  const months = ['oct','nov','dec','jan','feb','mar'];
+  const monthKeys = ['oct','nov','dec','jan','feb','mar'];
   tbody.innerHTML = '';
-  core.kpis.forEach((kpi, i) => {
+  lob.kpis.forEach((kpi, i) => {
     const tr = document.createElement('tr');
-    const tgt = core.target[i];
-    let cells = `<td>${kpi}</td><td>${tgt}${core.units[i]}</td>`;
-    months.forEach(m => {
-      const v = core[m][i];
+    const tgt = lob.target[i];
+    let cells = `<td>${kpi}</td><td>${tgt}${lob.units[i]}</td>`;
+    monthKeys.forEach(m => {
+      const v = lob[m][i];
       if (v === null) { cells += `<td style="color:var(--muted);">N/A</td>`; return; }
-      const isGood = core.lowerBetter[i] ? v <= tgt : v >= tgt;
+      const isGood = lob.lowerBetter[i] ? v <= tgt : v >= tgt;
       const cls = isGood ? 'color:var(--green)' : 'color:var(--red)';
-      cells += `<td style="${cls}">${v}${core.units[i]}</td>`;
+      cells += `<td style="${cls}">${v}${lob.units[i]}</td>`;
     });
     tr.innerHTML = cells;
     tbody.appendChild(tr);
   });
 
-  initHistChart(key);
+  initHistChart(bpoKey, lobKey);
+}
+
+function selectBPO(key, btn) {
+  currentBPO = key;
+  document.querySelectorAll('.bpo-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistorical();
+}
+
+function selectLOB(key, btn) {
+  currentLOB = key;
+  document.querySelectorAll('.lob-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistorical();
 }
 
 // ─── PROPOSAL 1 SCORING ──────────────────────────────────────────────
@@ -1940,7 +2089,7 @@ function calcProposal3() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  selectBPO('taskus', document.querySelector('.bpo-tab.active'));
+  renderHistorical();
   calcProposal1();
   calcProposal2();
   calcProposal3();
