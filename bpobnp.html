@@ -432,61 +432,6 @@
     }
     .total-payout.penalty-box .total-amount { color: var(--red); }
 
-    /* BPO SELECTOR */
-    .bpo-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .bpo-tab {
-      padding: 8px 20px;
-      border-radius: 24px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .bpo-tab:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
-    .bpo-tab.active {
-      background: var(--green);
-      border-color: var(--green);
-      color: #000;
-      font-weight: 600;
-    }
-
-    /* LOB TABS */
-    .lob-tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 24px;
-      margin-top: -12px;
-      flex-wrap: wrap;
-    }
-    .lob-tab {
-      padding: 5px 16px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .lob-tab:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
-    .lob-tab.active {
-      background: rgba(255,183,3,0.15);
-      border-color: var(--amber);
-      color: var(--amber);
-      font-weight: 600;
-    }
-
     /* PROPOSAL SECTION WRAPPERS */
     .proposal-section {
       border: 1px solid var(--border);
@@ -676,42 +621,7 @@
   <div class="section-title">Historical Performance</div>
   <div class="section-sub">Six-month review (Oct 2024 – Mar 2025) of KPI performance versus targets across all BPO partners, with implied bonus/penalty outcomes.</div>
 
-  <!-- BPO SELECTOR -->
-  <div class="bpo-tabs">
-    <button class="bpo-tab active" onclick="selectBPO('taskus', this)">TaskUs</button>
-    <button class="bpo-tab" onclick="selectBPO('telus', this)">TELUS</button>
-  </div>
-  <!-- LOB SELECTOR -->
-  <div class="lob-tabs">
-    <button class="lob-tab active" onclick="selectLOB('core', this)">Core</button>
-    <button class="lob-tab" onclick="selectLOB('corepremium', this)">Core Premium</button>
-    <button class="lob-tab" onclick="selectLOB('retail', this)">Retail</button>
-    <button class="lob-tab" onclick="selectLOB('plus', this)">Plus</button>
-  </div>
-
-  <!-- PERFORMANCE TABLE -->
-  <div class="card">
-    <div class="card-title" id="table-bpo-title">TaskUs — Monthly KPI Results (Core LOB)</div>
-    <div class="perf-table-wrap">
-      <table id="historicalTable">
-        <thead>
-          <tr>
-            <th>KPI</th>
-            <th>Target</th>
-            <th>Aug 25</th>
-            <th>Sep 25</th>
-            <th>Oct 25</th>
-            <th>Nov 25</th>
-            <th>Dec 25</th>
-            <th>Jan 26</th>
-          </tr>
-        </thead>
-        <tbody id="historicalTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- IMPLIED B&P TABLE -->
+  <!-- ACTUAL B&P TABLE -->
   <div class="card" style="margin-top:16px;">
     <div class="card-title">Actual Bonus / Penalty by Month</div>
     <div class="perf-table-wrap">
@@ -1420,117 +1330,6 @@
 <!-- JAVASCRIPT                                  -->
 <!-- ═══════════════════════════════════════════ -->
 <script>
-// ─── STATE ────────────────────────────────────────────────────────────
-let currentBPO = 'taskus';
-let currentLOB = 'core';
-
-// ─── DATA ─────────────────────────────────────────────────────────────
-// Aug–Oct 2025: 3rd KPI = Positive Sentiment (scale ~35–46%)
-// Nov 2025–Jan 2026: 3rd KPI = AI Smiley (scale ~79–88%)
-const bpoData = {
-  taskus: {
-    label: 'TaskUs',
-    lobs: {
-      core: {
-        label: 'Core',
-        target: [81.37, 34.05, 84.06, 83.24, 100],
-        aug:   [79.80, 33.90, 42.23, 82.50, 100],
-        sep:   [80.66, 35.20, 40.81, 82.60, 100],
-        oct:   [80.66, 35.20, 40.81, 82.60, 100],
-        nov:   [81.24, 35.50, 83.71, 83.50, 100],
-        dec:   [82.40, 35.80, 83.85, 82.90, 100],
-        jan:   [80.13, 36.00, 82.77, 83.40, 100],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
-      corepremium: {
-        label: 'Core Premium',
-        target: [82.51, 32.08, 84.06, 84.00, 100],
-        aug:   [83.57, 34.50, 45.59, 82.70, 100],
-        sep:   [84.81, 34.08, 44.38, 82.60, 100],
-        oct:   [84.81, 34.08, 44.38, 82.60, 100],
-        nov:   [85.19, 34.30, 83.88, 83.10, 100],
-        dec:   [85.05, 35.20, 85.20, 82.90, 100],
-        jan:   [84.54, 33.90, 84.11, 83.70, 100],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
-      retail: {
-        label: 'Retail',
-        target: [86.00, 23.14, 83.87, 84.00, 100],
-        aug:   [84.62, 23.72, 36.20, 84.00, 100],
-        sep:   [86.25, 24.48, 35.35, 83.10, 100],
-        oct:   [86.25, 24.48, 35.35, 83.10, 100],
-        nov:   [86.86, 24.59, 85.36, 83.40, 100],
-        dec:   [83.42, 24.78, 81.81, 81.60, 100],
-        jan:   [85.35, 22.98, 81.73, 84.80, 100],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
-      plus: {
-        label: 'Plus',
-        target: [83.00, 32.45, 84.39, 84.26, 100],
-        aug:   [82.17, 32.36, 34.79, 83.60, 100],
-        sep:   [82.37, 34.34, 34.05, 83.00, 100],
-        oct:   [82.37, 34.34, 34.05, 83.00, 100],
-        nov:   [84.06, 33.69, 85.68, 83.20, 100],
-        dec:   [85.25, 34.17, 86.88, 84.60, 100],
-        jan:   [87.12, 32.13, 87.24, 85.40, 100],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
-    },
-  },
-  telus: {
-    label: 'TELUS',
-    lobs: {
-      corepremium: {
-        label: 'Core Premium',
-        target: [82.51, 32.08, 84.06, 84.00, 100],
-        aug:   [73.68, 36.60, 40.75, 83.00, 100],
-        sep:   [72.01, 34.80, 39.27, 83.70, 94.40],
-        oct:   [72.01, 34.80, 39.27, 83.70, 100],
-        nov:   [77.04, 37.90, 79.35, 83.40, 100],
-        dec:   [73.82, 38.00, 80.09, 83.20, 100],
-        jan:   [77.08, 35.80, 79.34, 84.10, 100],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
-      retail: {
-        label: 'Retail',
-        target: [86.00, 22.02, 83.87, 84.00, 100],
-        aug:   [86.57, 21.78, 39.28, 83.70, 100],
-        sep:   [85.09, 23.29, 36.46, 82.60, 100],
-        oct:   [85.09, 23.29, 36.46, 82.60, 94.00],
-        nov:   [84.89, 22.63, 87.78, 82.10, 100],
-        dec:   [85.93, 22.28, 78.95, 82.10, 100],
-        jan:   [83.58, 21.63, 80.22, 82.70, 100],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
-      plus: {
-        label: 'Plus',
-        target: [83.24, 31.46, 84.39, 84.26, 100],
-        aug:   [83.62, 32.20, 36.98, 87.60, 100],
-        sep:   [84.29, 33.16, 36.68, 84.80, 100],
-        oct:   [84.29, 33.16, 36.68, 84.80, 99.62],
-        nov:   [83.91, 32.77, 84.21, 85.30, 99.59],
-        dec:   [84.87, 33.00, 84.04, 87.20, 100],
-        jan:   [84.34, 31.03, 86.15, 86.50, 100],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
-    },
-  },
-};
-
 // ─── ACTUAL B&P AMOUNTS (from official monthly scorecards) ────────────
 // amt: actual dollar bonus (+) or penalty (-); 0 = no P/B; 'waived' = waived; null = no data
 // score: total scorecard points out of 45 from the official file
@@ -1596,57 +1395,6 @@ const bnpActual = {
     },
   },
 };
-
-// ─── RENDER ───────────────────────────────────────────────────────────
-function renderHistorical() {
-  const bpoKey = currentBPO;
-  const lobKey = currentLOB;
-  const bpo = bpoData[bpoKey];
-  const lob = bpo.lobs[lobKey];
-
-  document.getElementById('table-bpo-title').textContent =
-    `${bpo.label} — Monthly KPI Results (${lob.label})`;
-
-  // Populate table
-  const tbody = document.getElementById('historicalTableBody');
-  const monthKeys = ['aug','sep','oct','nov','dec','jan'];
-  tbody.innerHTML = '';
-  lob.kpis.forEach((kpi, i) => {
-    const tr = document.createElement('tr');
-    const tgt = lob.target[i];
-    let cells = `<td>${kpi}</td><td>${tgt}${lob.units[i]}</td>`;
-    monthKeys.forEach(m => {
-      const v = lob[m][i];
-      if (v === null) { cells += `<td style="color:var(--muted);">N/A</td>`; return; }
-      const isGood = lob.lowerBetter[i] ? v <= tgt : v >= tgt;
-      const cls = isGood ? 'color:var(--green)' : 'color:var(--red)';
-      cells += `<td style="${cls}">${v}${lob.units[i]}</td>`;
-    });
-    tr.innerHTML = cells;
-    tbody.appendChild(tr);
-  });
-}
-
-function selectBPO(key, btn) {
-  currentBPO = key;
-  document.querySelectorAll('.bpo-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  // If selected LOB doesn't exist for this BPO, switch to first valid one
-  if (!bpoData[currentBPO]?.lobs?.[currentLOB]) {
-    currentLOB = Object.keys(bpoData[currentBPO].lobs)[0];
-    document.querySelectorAll('.lob-tab').forEach(b => {
-      b.classList.toggle('active', b.textContent.toLowerCase().replace(/\s+/g,'') === currentLOB);
-    });
-  }
-  renderHistorical();
-}
-
-function selectLOB(key, btn) {
-  currentLOB = key;
-  document.querySelectorAll('.lob-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderHistorical();
-}
 
 // ─── PROPOSAL 1 SCORING ──────────────────────────────────────────────
 // Score KPI: linear scale, floor=75% of target, ceiling=125%, 0-10 pts
@@ -2007,7 +1755,6 @@ function buildImpliedBnPTable() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  renderHistorical();
   buildImpliedBnPTable();
   calcProposal1();
   calcProposal2();
