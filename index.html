@@ -730,12 +730,12 @@
           <tr>
             <th>KPI</th>
             <th>Target</th>
-            <th>Oct 24</th>
-            <th>Nov 24</th>
-            <th>Dec 24</th>
-            <th>Jan 25</th>
-            <th>Feb 25</th>
-            <th>Mar 25</th>
+            <th>Aug 25</th>
+            <th>Sep 25</th>
+            <th>Oct 25</th>
+            <th>Nov 25</th>
+            <th>Dec 25</th>
+            <th>Jan 26</th>
           </tr>
         </thead>
         <tbody id="historicalTableBody"></tbody>
@@ -745,26 +745,26 @@
 
   <!-- IMPLIED B&P TABLE -->
   <div class="card" style="margin-top:16px;">
-    <div class="card-title">Implied Bonus / Penalty by Month (Score-Based)</div>
+    <div class="card-title">Actual Bonus / Penalty by Month</div>
     <div class="perf-table-wrap">
       <table>
         <thead>
           <tr>
             <th>BPO</th>
             <th>LOB</th>
-            <th>Oct 24</th>
-            <th>Nov 24</th>
-            <th>Dec 24</th>
-            <th>Jan 25</th>
-            <th>Feb 25</th>
-            <th>Mar 25</th>
+            <th>Aug 25</th>
+            <th>Sep 25</th>
+            <th>Oct 25</th>
+            <th>Nov 25</th>
+            <th>Dec 25</th>
+            <th>Jan 26</th>
           </tr>
         </thead>
         <tbody id="implied-bnp-body"></tbody>
       </table>
     </div>
     <div style="margin-top:16px; padding:14px 16px; background:rgba(255,183,3,0.07); border:1px solid rgba(255,183,3,0.15); border-radius:10px; font-size:12px; color:var(--muted);">
-      <strong style="color:var(--amber);">Note on Data Constraints:</strong> Several data quality issues were identified during this period including data migration impacts, Zendesk ticket deletion (Jan 2025), Beacon instability (Jan–Mar 2025), and missing AHT data (Mar 2025). Results should be interpreted with these constraints in mind.
+      <strong style="color:var(--amber);">Note on Data:</strong> Sep 2025 data not available. TELUS Core scorecard not issued for this period. The AI Smiley KPI replaced Positive Sentiment starting Nov 2025 (different scale; Aug–Oct values reflect Positive Sentiment). TELUS Core Premium B&amp;P was waived for Dec 2025 and Jan 2026.
     </div>
   </div>
 </section>
@@ -1457,61 +1457,63 @@ let currentBPO = 'taskus';
 let currentLOB = 'core';
 
 // ─── DATA ─────────────────────────────────────────────────────────────
+// Aug–Oct 2025: 3rd KPI = Positive Sentiment (scale ~35–46%)
+// Nov 2025–Jan 2026: 3rd KPI = AI Smiley (scale ~79–88%)
 const bpoData = {
   taskus: {
     label: 'TaskUs',
     lobs: {
       core: {
         label: 'Core',
-        target: [80, 33.22, 40.00, 85.06, 100],
-        oct:   [75.70, 32.5, 38.82, null, 100],
-        nov:   [73.80, 32.8, 37.94, null, 100],
-        dec:   [79.80, 33.2, 38.74, null, 100],
-        jan:   [79.80, 35.8, 38.36, 84.60, 100],
-        feb:   [77.00, 34.1, 38.07, 84.50, 100],
-        mar:   [78.90, 34.7, 39.15, 83.50, 100],
-        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        target: [81.37, 34.05, 84.06, 83.24, 100],
+        aug:   [79.80, 33.90, 42.23, 82.50, 100],
+        sep:   [null,  null,  null,  null,  null],
+        oct:   [80.66, 35.20, 40.81, 82.60, 100],
+        nov:   [81.24, 35.50, 83.71, 83.50, 100],
+        dec:   [82.40, 35.80, 83.85, 82.90, 100],
+        jan:   [80.13, 36.00, 82.77, 83.40, 100],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
         units: ['%', 'min', '%', '%', '%'],
         lowerBetter: [false, true, false, false, false],
       },
       corepremium: {
         label: 'Core Premium',
-        target: [81.69, 31.44, 42.59, 85.06, 100],
-        oct:   [78.20, 34, 38.66, null, 100],
-        nov:   [80.20, 31.2, 40.37, null, 100],
-        dec:   [84.40, 32.7, 41.88, null, 100],
-        jan:   [85.20, 33.2, 41.06, 84.90, 100],
-        feb:   [78.50, 32.9, 42.38, 84.40, 100],
-        mar:   [83.30, 34.6, 44.46, 82.60, 100],
-        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        target: [82.51, 32.08, 84.06, 84.00, 100],
+        aug:   [83.57, 34.50, 45.59, 82.70, 100],
+        sep:   [null,  null,  null,  null,  null],
+        oct:   [84.81, 34.08, 44.38, 82.60, 100],
+        nov:   [85.19, 34.30, 83.88, 83.10, 100],
+        dec:   [85.05, 35.20, 85.20, 82.90, 100],
+        jan:   [84.54, 33.90, 84.11, 83.70, 100],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
         units: ['%', 'min', '%', '%', '%'],
         lowerBetter: [false, true, false, false, false],
       },
       retail: {
         label: 'Retail',
-        target: [86, 26.9, 22, 41.23, 85.06, 100],
-        oct:   [79.40, 30.5, 23.60, 37.43, null, 100],
-        nov:   [82.80, 31.9, 23.80, 39.22, null, 100],
-        dec:   [86.70, 33.4, 22.60, 42.65, null, 100],
-        jan:   [83.20, 33.6, 24.00, 39.00, 81.80, 100],
-        feb:   [84.40, 33.6, 23.70, 36.01, 80.10, 100],
-        mar:   [80.40, 33.6, 22.70, 35.29, 84.40, 100],
-        kpis:  ['Overall Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, true, false, false, false],
+        target: [86.00, 23.14, 83.87, 84.00, 100],
+        aug:   [84.62, 23.72, 36.20, 84.00, 100],
+        sep:   [null,  null,  null,  null,  null],
+        oct:   [86.25, 24.48, 35.35, 83.10, 100],
+        nov:   [86.86, 24.59, 85.36, 83.40, 100],
+        dec:   [83.42, 24.78, 81.81, 81.60, 100],
+        jan:   [85.35, 22.98, 81.73, 84.80, 100],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
       },
       plus: {
         label: 'Plus',
-        target: [83, 86, 29.1, 21.5, 38.46, 85.06, 100],
-        oct:   [80.21, 83.44, 32.3, 21.80, 40.00, null, 100],
-        nov:   [79.90, 73.72, 31, 22.00, 38.15, null, 100],
-        dec:   [79.45, 69.92, 32.3, 21.90, 34.59, null, 100],
-        jan:   [78.44, 72.08, 36.2, 22.40, 34.13, 86.20, 100],
-        feb:   [81.64, 80.84, 35.9, 23.70, 36.22, 87.10, 100],
-        mar:   [84.16, 77.48, 36.4, 22.50, 37.00, 87.30, 100],
-        kpis:  ['Chat Smiley', 'Phone Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
-        units: ['%', '%', 'min', 'min', '%', '%', '%'],
-        lowerBetter: [false, false, true, true, false, false, false],
+        target: [83.00, 32.45, 84.39, 84.26, 100],
+        aug:   [82.17, 32.36, 34.79, 83.60, 100],
+        sep:   [null,  null,  null,  null,  null],
+        oct:   [82.37, 34.34, 34.05, 83.00, 100],
+        nov:   [84.06, 33.69, 85.68, 83.20, 100],
+        dec:   [85.25, 34.17, 86.88, 84.60, 100],
+        jan:   [87.12, 32.13, 87.24, 85.40, 100],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
       },
     },
   },
@@ -1520,56 +1522,118 @@ const bpoData = {
     lobs: {
       core: {
         label: 'Core',
-        target: [80, 33.22, 40.00, 85.06, 100],
-        oct:   [56.50, 42.9, 29.88, null, 100],
-        nov:   [60.10, 34.8, 34.93, null, 100],
-        dec:   [68.60, 32.6, 37.40, null, 100],
-        jan:   [66.20, 35.4, 33.20, 84.20, 100],
-        feb:   [65.30, 36.0, 33.46, 84.00, 100],
-        mar:   [70.50, 38.4, 34.45, 83.50, 100],
-        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        target: [81.37, 34.05, 84.06, 83.24, 100],
+        aug:   [null, null, null, null, null],
+        sep:   [null, null, null, null, null],
+        oct:   [null, null, null, null, null],
+        nov:   [null, null, null, null, null],
+        dec:   [null, null, null, null, null],
+        jan:   [null, null, null, null, null],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
         units: ['%', 'min', '%', '%', '%'],
         lowerBetter: [false, true, false, false, false],
       },
       corepremium: {
         label: 'Core Premium',
-        target: [81.69, 31.44, 42.59, 85.06, 100],
-        oct:   [69.20, 35.2, 34.46, null, 100],
-        nov:   [68.40, 34.5, 38.20, null, 100],
-        dec:   [77.70, 34.5, 42.33, null, 100],
-        jan:   [75.90, 35.5, 37.50, 85.50, 100],
-        feb:   [76.40, 34.8, 39.39, 85.70, 100],
-        mar:   [77.80, 39.2, 36.78, 84.20, 100],
-        kpis:  ['Overall Smiley', 'Chat AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
+        target: [82.51, 32.08, 84.06, 84.00, 100],
+        aug:   [73.68, 36.60, 40.75, 83.00, 100],
+        sep:   [null,  null,  null,  null,  null],
+        oct:   [72.01, 34.80, 39.27, 83.70, 100],
+        nov:   [77.04, 37.90, 79.35, 83.40, 100],
+        dec:   [73.82, 38.00, 80.09, 83.20, 100],
+        jan:   [77.08, 35.80, 79.34, 84.10, 100],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
         units: ['%', 'min', '%', '%', '%'],
         lowerBetter: [false, true, false, false, false],
       },
       retail: {
         label: 'Retail',
-        target: [86, 26.9, 22, 41.23, 85.06, 100],
-        oct:   [72.30, 27.4, 21.7, 35.43, null, 76.60],
-        nov:   [73.20, 30.2, 20.8, 35.76, null, 100],
-        dec:   [86.50, 30.6, 19.2, 32.75, null, 100],
-        jan:   [82.40, 32.7, 20.6, 38.81, 81.10, 100],
-        feb:   [84.70, 34.6, 22.4, 41.43, 79.20, 100],
-        mar:   [82.70, 33.5, 20.5, 37.94, 82.60, 100],
-        kpis:  ['Overall Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, true, false, false, false],
+        target: [86.00, 22.02, 83.87, 84.00, 100],
+        aug:   [86.57, 21.78, 39.28, 83.70, 100],
+        sep:   [null,  null,  null,  null,  null],
+        oct:   [85.09, 23.29, 36.46, 82.60, 94.00],
+        nov:   [84.89, 22.63, 87.78, 82.10, 100],
+        dec:   [85.93, 22.28, 78.95, 82.10, 100],
+        jan:   [83.58, 21.63, 80.22, 82.70, 100],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
       },
       plus: {
         label: 'Plus',
-        target: [83, 86, 29.1, 21.5, 38.46, 85.06, 100],
-        oct:   [71.20, 76.4, 37, 20.2, 34.83, null, 100],
-        nov:   [72.28, 82.18, 35.4, 22.3, 35.88, null, 94.40],
-        dec:   [74.70, 84.30, 35.4, 21.3, 35.09, null, 100],
-        jan:   [74.21, 78.95, 38.5, 22.4, 34.64, 87.50, 100],
-        feb:   [77.47, 87.04, 39.5, 22.5, 36.17, 87.90, 100],
-        mar:   [78.80, 81.91, 40.7, 21.7, 38.56, 89.30, 100],
-        kpis:  ['Chat Smiley', 'Phone Smiley', 'Chat AHT', 'Phone AHT', 'Positive Sentiment', 'AFTR', 'Hours Delivery'],
-        units: ['%', '%', 'min', 'min', '%', '%', '%'],
-        lowerBetter: [false, false, true, true, false, false, false],
+        target: [83.24, 31.46, 84.39, 84.26, 100],
+        aug:   [83.62, 32.20, 36.98, 87.60, 100],
+        sep:   [null,  null,  null,  null,  null],
+        oct:   [84.29, 33.16, 36.68, 84.80, 99.62],
+        nov:   [83.91, 32.77, 84.21, 85.30, 99.59],
+        dec:   [84.87, 33.00, 84.04, 87.20, 100],
+        jan:   [84.34, 31.03, 86.15, 86.50, 100],
+        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
+        units: ['%', 'min', '%', '%', '%'],
+        lowerBetter: [false, true, false, false, false],
       },
+    },
+  },
+};
+
+// ─── ACTUAL B&P AMOUNTS (from official monthly scorecards) ────────────
+// amt: actual dollar bonus (+) or penalty (-); 0 = no P/B; 'waived' = waived; null = no data
+// score: total scorecard points out of 45 from the official file
+const bnpActual = {
+  taskus: {
+    core:        {
+      aug: { amt:  19069.20, score: 26.58 }, sep: null,
+      oct: { amt:      0,    score: 25.21 },
+      nov: { amt:      0,    score: 24.10 },
+      dec: { amt:      0,    score: 24.09 },
+      jan: { amt: -12744.02, score: 23.28 },
+    },
+    corepremium: {
+      aug: { amt:      0,    score: 25.88 }, sep: null,
+      oct: { amt:      0,    score: 25.83 },
+      nov: { amt:      0,    score: 24.01 },
+      dec: { amt:  -4937.51, score: 23.68 },
+      jan: { amt:      0,    score: 24.30 },
+    },
+    retail:      {
+      aug: { amt:      0,    score: 25.82 }, sep: null,
+      oct: { amt:      0,    score: 24.94 },
+      nov: { amt:      0,    score: 24.53 },
+      dec: { amt:   -734.50, score: 22.20 },
+      jan: { amt:      0,    score: 24.67 },
+    },
+    plus:        {
+      aug: { amt:      0,    score: 25.82 }, sep: null,
+      oct: { amt:      0,    score: 24.16 },
+      nov: { amt:      0,    score: 24.41 },
+      dec: { amt:      0,    score: 25.09 },
+      jan: { amt:   3253.73, score: 27.14 },
+    },
+  },
+  telus: {
+    core:        {
+      aug: null, sep: null, oct: null, nov: null, dec: null, jan: null,
+    },
+    corepremium: {
+      aug: { amt:  -3614.07, score: 19.88 }, sep: null,
+      oct: { amt:  -3199.68, score: 20.04 },
+      nov: { amt:  -4799.52, score: 18.78 },
+      dec: { amt: 'waived',  score: 18.07 },
+      jan: { amt: 'waived',  score: 20.27 },
+    },
+    retail:      {
+      aug: { amt:   1556.09, score: 28.64 }, sep: null,
+      oct: { amt:  -1544.67, score: 20.28 },
+      nov: { amt:      0,    score: 25.42 },
+      dec: { amt:  -1412.31, score: 23.28 },
+      jan: { amt:  -1487.12, score: 23.61 },
+    },
+    plus:        {
+      aug: { amt:   2728.20, score: 28.22 }, sep: null,
+      oct: { amt:   2700.52, score: 26.54 },
+      nov: { amt:      0,    score: 24.25 },
+      dec: { amt:      0,    score: 25.26 },
+      jan: { amt:   2765.05, score: 26.49 },
     },
   },
 };
@@ -1579,11 +1643,12 @@ let histChart;
 
 function initHistChart(bpoKey, lobKey) {
   const lob = bpoData[bpoKey].lobs[lobKey];
-  const months = ['Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25'];
-  const actuals = ['oct','nov','dec','jan','feb','mar'].map(m => lob[m][0]);
+  const months = ['Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26'];
+  const actuals = ['aug','sep','oct','nov','dec','jan'].map(m => lob[m][0]);
   const targets = Array(6).fill(lob.target[0]);
-  const minVal = Math.max(40, Math.floor(Math.min(...actuals.filter(v => v !== null)) / 5) * 5 - 5);
-  const maxVal = Math.min(100, Math.ceil(Math.max(...actuals.filter(v => v !== null), lob.target[0]) / 5) * 5 + 5);
+  const validActuals = actuals.filter(v => v !== null);
+  const minVal = validActuals.length ? Math.max(40, Math.floor(Math.min(...validActuals) / 5) * 5 - 5) : 60;
+  const maxVal = validActuals.length ? Math.min(100, Math.ceil(Math.max(...validActuals, lob.target[0]) / 5) * 5 + 5) : 95;
 
   const ctx = document.getElementById('historicalChart').getContext('2d');
   if (histChart) histChart.destroy();
@@ -1629,32 +1694,24 @@ function initHistChart(bpoKey, lobKey) {
   });
 }
 
-// ─── DYNAMIC STATS ────────────────────────────────────────────────────
+// ─── DYNAMIC STATS (uses bnpActual as source of truth) ───────────────
 function computeStats(bpoKey, lobKey) {
-  const lob = bpoData[bpoKey].lobs[lobKey];
-  const monthKeys = ['oct','nov','dec','jan','feb','mar'];
+  const monthKeys = ['aug','sep','oct','nov','dec','jan'];
   let bonusMonths = 0, penaltyMonths = 0, scoreSum = 0, scoredMonths = 0;
 
   monthKeys.forEach(m => {
-    const data = lob[m];
-    let total = 0, maxPossible = 0;
-    data.forEach((val, i) => {
-      if (val === null) return;
-      const isHours = i === lob.kpis.length - 1;
-      const maxPts = isHours ? 5 : 10;
-      total += scoreKPI(val, lob.target[i], lob.lowerBetter[i], maxPts);
-      maxPossible += maxPts;
-    });
-    if (maxPossible === 0) return;
-    const scaled = Math.round(total * 45 / maxPossible);
-    scoreSum += scaled;
-    scoredMonths++;
-    if (scaled >= 26) bonusMonths++;
-    else if (scaled <= 24) penaltyMonths++;
+    const entry = bnpActual[bpoKey]?.[lobKey]?.[m];
+    if (!entry) return;
+    const { amt, score } = entry;
+    if (typeof amt === 'number' && amt > 0) bonusMonths++;
+    else if (typeof amt === 'number' && amt < 0) penaltyMonths++;
+    // amt === 0 → neutral;  amt === 'waived' → was a penalty but waived, count as penalty
+    else if (amt === 'waived') penaltyMonths++;
+    if (typeof score === 'number') { scoreSum += score; scoredMonths++; }
   });
 
   return {
-    scoreAvg: scoredMonths > 0 ? Math.round(scoreSum / scoredMonths) : 0,
+    scoreAvg: scoredMonths > 0 ? (scoreSum / scoredMonths).toFixed(1) : '—',
     bonusMonths,
     penaltyMonths,
   };
@@ -1681,13 +1738,13 @@ function renderHistorical() {
   else netEl.classList.add('amber');
 
   document.getElementById('chart-title').textContent =
-    `${bpo.label} ${lob.label} — ${lob.kpis[0]} vs. Target (Oct 2024 – Mar 2025)`;
+    `${bpo.label} ${lob.label} — ${lob.kpis[0]} vs. Target (Aug 2025 – Jan 2026)`;
   document.getElementById('table-bpo-title').textContent =
     `${bpo.label} — Monthly KPI Results (${lob.label})`;
 
   // Populate table
   const tbody = document.getElementById('historicalTableBody');
-  const monthKeys = ['oct','nov','dec','jan','feb','mar'];
+  const monthKeys = ['aug','sep','oct','nov','dec','jan'];
   tbody.innerHTML = '';
   lob.kpis.forEach((kpi, i) => {
     const tr = document.createElement('tr');
@@ -2026,21 +2083,16 @@ function calcProposal3() {
   document.getElementById('p3-annual').textContent = (net >= 0 ? '+' : '−') + fmt.format(Math.abs(net * 12));
 }
 
-// ─── IMPLIED B&P TABLE ────────────────────────────────────────────────
-function computeMonthBnP(bpoKey, lobKey, monthKey) {
-  const lob = bpoData[bpoKey].lobs[lobKey];
-  const data = lob[monthKey];
-  let total = 0, maxPossible = 0;
-  data.forEach((val, i) => {
-    if (val === null) return;
-    const isHours = i === lob.kpis.length - 1;
-    const maxPts = isHours ? 5 : 10;
-    total += scoreKPI(val, lob.target[i], lob.lowerBetter[i], maxPts);
-    maxPossible += maxPts;
-  });
-  if (maxPossible === 0) return null;
-  const scaled = Math.round(total * 45 / maxPossible);
-  return lobKey === 'corepremium' ? scoreToBnP10_45(scaled) : scoreToBnP5_45(scaled);
+// ─── ACTUAL B&P TABLE ─────────────────────────────────────────────────
+function formatBnPCell(entry) {
+  if (entry === null || entry === undefined) return { text: 'N/A', cls: 'badge-neutral' };
+  const amt = (typeof entry === 'object') ? entry.amt : entry;
+  if (amt === null || amt === undefined) return { text: 'N/A', cls: 'badge-neutral' };
+  if (amt === 'waived') return { text: 'Waived', cls: 'badge-amber' };
+  if (amt === 0) return { text: '$0', cls: 'badge-neutral' };
+  const abs = Math.abs(amt);
+  const str = '$' + abs.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return amt > 0 ? { text: '+' + str, cls: 'badge-green' } : { text: '-' + str, cls: 'badge-red' };
 }
 
 function buildImpliedBnPTable() {
@@ -2052,43 +2104,29 @@ function buildImpliedBnPTable() {
     { key: 'telus',  label: 'TELUS'  },
   ];
   const lobs = [
-    { key: 'core',        label: 'Core'         },
-    { key: 'corepremium', label: 'Core Premium'  },
-    { key: 'retail',      label: 'Retail'        },
-    { key: 'plus',        label: 'Plus'          },
+    { key: 'core',        label: 'Core'        },
+    { key: 'corepremium', label: 'Core Premium' },
+    { key: 'retail',      label: 'Retail'       },
+    { key: 'plus',        label: 'Plus'         },
   ];
-  const months = ['oct','nov','dec','jan','feb','mar'];
+  const months = ['aug','sep','oct','nov','dec','jan'];
 
   tbody.innerHTML = '';
   bpos.forEach(({ key: bpoKey, label: bpoLabel }) => {
     lobs.forEach(({ key: lobKey, label: lobLabel }, lobIdx) => {
       const tr = document.createElement('tr');
-
-      // BPO cell — rowspan 4 on first LOB row
       if (lobIdx === 0) {
-        const bpoCell = `<td rowspan="4" style="font-weight:600;vertical-align:middle;">${bpoLabel}</td>`;
-        tr.innerHTML = bpoCell;
+        tr.innerHTML = `<td rowspan="4" style="font-weight:600;vertical-align:middle;">${bpoLabel}</td>`;
       }
-
       let cells = `<td>${lobLabel}</td>`;
       months.forEach(m => {
-        const pct = computeMonthBnP(bpoKey, lobKey, m);
-        if (pct === null) {
-          cells += `<td><span class="badge badge-neutral">N/A</span></td>`;
-        } else if (pct > 0) {
-          cells += `<td><span class="badge badge-green">+${pct}%</span></td>`;
-        } else if (pct < 0) {
-          cells += `<td><span class="badge badge-red">${pct}%</span></td>`;
-        } else {
-          cells += `<td><span class="badge badge-neutral">0%</span></td>`;
-        }
+        const entry = bnpActual[bpoKey]?.[lobKey]?.[m];
+        const { text, cls } = formatBnPCell(entry);
+        cells += `<td><span class="badge ${cls}">${text}</span></td>`;
       });
-
       tr.innerHTML += cells;
       tbody.appendChild(tr);
     });
-
-    // Spacer row between BPOs
     const spacer = document.createElement('tr');
     spacer.innerHTML = `<td colspan="8" style="padding:4px 0;border:none;"></td>`;
     tbody.appendChild(spacer);
