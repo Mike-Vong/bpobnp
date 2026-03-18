@@ -432,6 +432,34 @@
     }
     .total-payout.penalty-box .total-amount { color: var(--red); }
 
+    /* P3 AMOUNT PILLS */
+    .p3-amount-pills {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .p3-amount-pill {
+      flex: 1;
+      padding: 9px 0;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .p3-amount-pill:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .p3-amount-pill.active {
+      background: rgba(255,183,3,0.15);
+      border-color: var(--amber);
+      color: var(--amber);
+      font-weight: 700;
+    }
+
     /* PROPOSAL SECTION WRAPPERS */
     .proposal-section {
       border: 1px solid var(--border);
@@ -1149,31 +1177,40 @@
       </div>
     </div>
 
+    <!-- AMOUNT SELECTOR -->
+    <div class="p3-amount-pills">
+      <button class="p3-amount-pill active" onclick="selectP3Amount(0.10, this)">$0.10</button>
+      <button class="p3-amount-pill" onclick="selectP3Amount(0.25, this)">$0.25</button>
+      <button class="p3-amount-pill" onclick="selectP3Amount(0.50, this)">$0.50</button>
+      <button class="p3-amount-pill" onclick="selectP3Amount(0.75, this)">$0.75</button>
+      <button class="p3-amount-pill" onclick="selectP3Amount(1.00, this)">$1.00</button>
+    </div>
+
     <!-- INTERACTION MATRIX -->
     <h3 style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">Reward &amp; Penalty Matrix</h3>
     <div class="interaction-grid">
       <div class="interaction-cell cell-penalty-high">
         <div class="score">0–2</div>
         <div class="outcome">of 7</div>
-        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.10</div>
+        <div class="outcome" id="p3-tile-02" style="margin-top:6px;font-weight:600;">−$0.10</div>
         <div class="outcome">per interaction</div>
       </div>
       <div class="interaction-cell cell-penalty-high">
         <div class="score">2</div>
         <div class="outcome">of 7</div>
-        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.10</div>
+        <div class="outcome" id="p3-tile-2" style="margin-top:6px;font-weight:600;">−$0.10</div>
         <div class="outcome">per interaction</div>
       </div>
       <div class="interaction-cell cell-penalty-low">
         <div class="score">3</div>
         <div class="outcome">of 7</div>
-        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.05</div>
+        <div class="outcome" id="p3-tile-3" style="margin-top:6px;font-weight:600;">−$0.05</div>
         <div class="outcome">per interaction</div>
       </div>
       <div class="interaction-cell cell-penalty-low">
         <div class="score">4</div>
         <div class="outcome">of 7</div>
-        <div class="outcome" style="margin-top:6px;font-weight:600;">−$0.05</div>
+        <div class="outcome" id="p3-tile-4" style="margin-top:6px;font-weight:600;">−$0.05</div>
         <div class="outcome">per interaction</div>
       </div>
       <div class="interaction-cell cell-neutral">
@@ -1185,13 +1222,13 @@
       <div class="interaction-cell cell-bonus-low">
         <div class="score">6</div>
         <div class="outcome">of 7</div>
-        <div class="outcome" style="margin-top:6px;font-weight:600;">+$0.05</div>
+        <div class="outcome" id="p3-tile-6" style="margin-top:6px;font-weight:600;">+$0.05</div>
         <div class="outcome">per interaction</div>
       </div>
       <div class="interaction-cell cell-bonus-high">
         <div class="score">7</div>
         <div class="outcome">of 7</div>
-        <div class="outcome" style="margin-top:6px;font-weight:600;">+$0.10</div>
+        <div class="outcome" id="p3-tile-7" style="margin-top:6px;font-weight:600;">+$0.10</div>
         <div class="outcome">per interaction</div>
       </div>
     </div>
@@ -1232,7 +1269,7 @@
             </div>
             <input type="range" id="p3-pct7" min="0" max="60" step="1" value="10" oninput="updateSliderDisplay('p3-pct7');calcProposal3()"/>
             <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
-              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct7-val" style="color:var(--green);font-weight:600;">10%</span> → +$0.10/interaction</span>
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct7-val" style="color:var(--green);font-weight:600;">10%</span> → <span id="p3-lbl-7">+$0.10/interaction</span></span>
             </div>
           </div>
 
@@ -1242,7 +1279,7 @@
             </div>
             <input type="range" id="p3-pct6" min="0" max="60" step="1" value="20" oninput="updateSliderDisplay('p3-pct6');calcProposal3()"/>
             <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
-              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct6-val" style="color:#5dd9b5;font-weight:600;">20%</span> → +$0.05/interaction</span>
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct6-val" style="color:#5dd9b5;font-weight:600;">20%</span> → <span id="p3-lbl-6">+$0.05/interaction</span></span>
             </div>
           </div>
 
@@ -1262,7 +1299,7 @@
             </div>
             <input type="range" class="red-thumb" id="p3-pct34" min="0" max="60" step="1" value="25" oninput="updateSliderDisplay('p3-pct34');calcProposal3()"/>
             <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
-              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct34-val" style="color:#ff8fa3;font-weight:600;">25%</span> → −$0.05/interaction</span>
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct34-val" style="color:#ff8fa3;font-weight:600;">25%</span> → <span id="p3-lbl-34">−$0.05/interaction</span></span>
             </div>
           </div>
 
@@ -1272,7 +1309,7 @@
             </div>
             <input type="range" class="red-thumb" id="p3-pct2" min="0" max="40" step="1" value="15" oninput="updateSliderDisplay('p3-pct2');calcProposal3()"/>
             <div class="slider-header" style="margin-top:8px;margin-bottom:0;">
-              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct2-val" style="color:var(--red);font-weight:600;">15%</span> → −$0.10/interaction</span>
+              <span style="font-size:12px;color:var(--muted);"><span id="p3-pct2-val" style="color:var(--red);font-weight:600;">15%</span> → <span id="p3-lbl-2">−$0.10/interaction</span></span>
             </div>
           </div>
         </div>
@@ -1639,6 +1676,33 @@ function calcProposal2() {
   }
 }
 
+let p3BaseAmount = 0.10;
+
+function fmtAmtP3(v) { return '$' + v.toFixed(2); }
+
+function updateP3Matrix() {
+  const full = p3BaseAmount;
+  const half = p3BaseAmount / 2;
+  document.getElementById('p3-tile-02').textContent = '−' + fmtAmtP3(full);
+  document.getElementById('p3-tile-2').textContent  = '−' + fmtAmtP3(full);
+  document.getElementById('p3-tile-3').textContent  = '−' + fmtAmtP3(half);
+  document.getElementById('p3-tile-4').textContent  = '−' + fmtAmtP3(half);
+  document.getElementById('p3-tile-6').textContent  = '+' + fmtAmtP3(half);
+  document.getElementById('p3-tile-7').textContent  = '+' + fmtAmtP3(full);
+  document.getElementById('p3-lbl-7').textContent   = '+' + fmtAmtP3(full)  + '/interaction';
+  document.getElementById('p3-lbl-6').textContent   = '+' + fmtAmtP3(half)  + '/interaction';
+  document.getElementById('p3-lbl-34').textContent  = '−' + fmtAmtP3(half)  + '/interaction';
+  document.getElementById('p3-lbl-2').textContent   = '−' + fmtAmtP3(full)  + '/interaction';
+}
+
+function selectP3Amount(val, btn) {
+  p3BaseAmount = val;
+  document.querySelectorAll('.p3-amount-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateP3Matrix();
+  calcProposal3();
+}
+
 function calcProposal3() {
   const total = parseInt(document.getElementById('p3-total').value);
   const pct7 = parseInt(document.getElementById('p3-pct7').value) / 100;
@@ -1668,10 +1732,10 @@ function calcProposal3() {
   document.getElementById('p3-r-2').textContent = fmtN(n2);
   document.getElementById('p3-r-rem').textContent = fmtN(rem);
 
-  const b7 = n7 * 0.10;
-  const b6 = n6 * 0.05;
-  const p34 = n34 * 0.05;
-  const p2 = n2 * 0.10;
+  const b7  = n7  * p3BaseAmount;
+  const b6  = n6  * (p3BaseAmount / 2);
+  const p34 = n34 * (p3BaseAmount / 2);
+  const p2  = n2  * p3BaseAmount;
   const net = b7 + b6 - p34 - p2;
 
   document.getElementById('p3-f-7').textContent = '+' + fmt.format(b7);
