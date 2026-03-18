@@ -764,7 +764,7 @@
       </table>
     </div>
     <div style="margin-top:16px; padding:14px 16px; background:rgba(255,183,3,0.07); border:1px solid rgba(255,183,3,0.15); border-radius:10px; font-size:12px; color:var(--muted);">
-      <strong style="color:var(--amber);">Note on Data:</strong> TELUS Core scorecard was only issued for Sep 2025; other months show N/A. The AI Smiley KPI replaced Positive Sentiment starting Nov 2025 (different scale; Aug–Oct values reflect Positive Sentiment). TELUS Core Premium B&amp;P was waived for Dec 2025 and Jan 2026.
+      <strong style="color:var(--amber);">Note on Data:</strong> The AI Smiley KPI replaced Positive Sentiment starting Nov 2025 (different scale; Aug–Oct values reflect Positive Sentiment). TELUS Core Premium B&amp;P was waived for Dec 2025 and Jan 2026.
     </div>
   </div>
 </section>
@@ -1520,19 +1520,6 @@ const bpoData = {
   telus: {
     label: 'TELUS',
     lobs: {
-      core: {
-        label: 'Core',
-        target: [81.37, 34.05, 84.06, 83.24, 100],
-        aug:   [null,  null,  null,  null,  null],
-        sep:   [72.01, 34.80, 39.27, 83.70, 96.76],
-        oct:   [null,  null,  null,  null,  null],
-        nov:   [null,  null,  null,  null,  null],
-        dec:   [null,  null,  null,  null,  null],
-        jan:   [null,  null,  null,  null,  null],
-        kpis:  ['Overall Smiley', 'AHT', 'AI Smiley', 'AFTR', 'Hours Delivery'],
-        units: ['%', 'min', '%', '%', '%'],
-        lowerBetter: [false, true, false, false, false],
-      },
       corepremium: {
         label: 'Core Premium',
         target: [82.51, 32.08, 84.06, 84.00, 100],
@@ -1615,14 +1602,6 @@ const bnpActual = {
     },
   },
   telus: {
-    core:        {
-      aug: null,
-      sep: { amt:  -3092.96, score: 18.73 },
-      oct: null,
-      nov: null,
-      dec: null,
-      jan: null,
-    },
     corepremium: {
       aug: { amt:  -3614.07, score: 19.88 },
       sep: { amt:  -7732.40, score: 15.04 },
@@ -1780,6 +1759,13 @@ function selectBPO(key, btn) {
   currentBPO = key;
   document.querySelectorAll('.bpo-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  // If selected LOB doesn't exist for this BPO, switch to first valid one
+  if (!bpoData[currentBPO]?.lobs?.[currentLOB]) {
+    currentLOB = Object.keys(bpoData[currentBPO].lobs)[0];
+    document.querySelectorAll('.lob-tab').forEach(b => {
+      b.classList.toggle('active', b.textContent.toLowerCase().replace(/\s+/g,'') === currentLOB);
+    });
+  }
   renderHistorical();
 }
 
@@ -2115,7 +2101,7 @@ function buildImpliedBnPTable() {
     { key: 'taskus', label: 'TaskUs' },
     { key: 'telus',  label: 'TELUS'  },
   ];
-  const lobs = [
+  const allLobs = [
     { key: 'core',        label: 'Core'        },
     { key: 'corepremium', label: 'Core Premium' },
     { key: 'retail',      label: 'Retail'       },
@@ -2125,10 +2111,12 @@ function buildImpliedBnPTable() {
 
   tbody.innerHTML = '';
   bpos.forEach(({ key: bpoKey, label: bpoLabel }) => {
-    lobs.forEach(({ key: lobKey, label: lobLabel }, lobIdx) => {
+    // Only show LOBs that exist for this BPO
+    const validLobs = allLobs.filter(({ key }) => bnpActual[bpoKey]?.[key] !== undefined);
+    validLobs.forEach(({ key: lobKey, label: lobLabel }, lobIdx) => {
       const tr = document.createElement('tr');
       if (lobIdx === 0) {
-        tr.innerHTML = `<td rowspan="4" style="font-weight:600;vertical-align:middle;">${bpoLabel}</td>`;
+        tr.innerHTML = `<td rowspan="${validLobs.length}" style="font-weight:600;vertical-align:middle;">${bpoLabel}</td>`;
       }
       let cells = `<td>${lobLabel}</td>`;
       months.forEach(m => {
