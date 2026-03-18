@@ -760,68 +760,7 @@
             <th>Mar 25</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>TaskUs</td>
-            <td>Core</td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-neutral">Neutral</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-          </tr>
-          <tr>
-            <td>TaskUs</td>
-            <td>Core Premium</td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-neutral">Neutral</span></td>
-            <td><span class="badge badge-green">Bonus</span></td>
-            <td><span class="badge badge-green">Bonus</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-neutral">Neutral</span></td>
-          </tr>
-          <tr>
-            <td>TaskUs</td>
-            <td>Retail</td>
-            <td><span class="badge badge-neutral">Neutral</span></td>
-            <td><span class="badge badge-green">Bonus</span></td>
-            <td><span class="badge badge-green">Bonus</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-          </tr>
-          <tr>
-            <td>TELUS</td>
-            <td>Core</td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-          </tr>
-          <tr>
-            <td>TELUS</td>
-            <td>Core Premium</td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-          </tr>
-          <tr>
-            <td>TELUS</td>
-            <td>Retail</td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-neutral">Neutral</span></td>
-            <td><span class="badge badge-green">Bonus</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-            <td><span class="badge badge-neutral">Neutral</span></td>
-            <td><span class="badge badge-red">Penalty</span></td>
-          </tr>
-        </tbody>
+        <tbody id="implied-bnp-body"></tbody>
       </table>
     </div>
     <div style="margin-top:16px; padding:14px 16px; background:rgba(255,183,3,0.07); border:1px solid rgba(255,183,3,0.15); border-radius:10px; font-size:12px; color:var(--muted);">
@@ -2087,9 +2026,79 @@ function calcProposal3() {
   document.getElementById('p3-annual').textContent = (net >= 0 ? '+' : '−') + fmt.format(Math.abs(net * 12));
 }
 
+// ─── IMPLIED B&P TABLE ────────────────────────────────────────────────
+function computeMonthBnP(bpoKey, lobKey, monthKey) {
+  const lob = bpoData[bpoKey].lobs[lobKey];
+  const data = lob[monthKey];
+  let total = 0, maxPossible = 0;
+  data.forEach((val, i) => {
+    if (val === null) return;
+    const isHours = i === lob.kpis.length - 1;
+    const maxPts = isHours ? 5 : 10;
+    total += scoreKPI(val, lob.target[i], lob.lowerBetter[i], maxPts);
+    maxPossible += maxPts;
+  });
+  if (maxPossible === 0) return null;
+  const scaled = Math.round(total * 45 / maxPossible);
+  return lobKey === 'corepremium' ? scoreToBnP10_45(scaled) : scoreToBnP5_45(scaled);
+}
+
+function buildImpliedBnPTable() {
+  const tbody = document.getElementById('implied-bnp-body');
+  if (!tbody) return;
+
+  const bpos = [
+    { key: 'taskus', label: 'TaskUs' },
+    { key: 'telus',  label: 'TELUS'  },
+  ];
+  const lobs = [
+    { key: 'core',        label: 'Core'         },
+    { key: 'corepremium', label: 'Core Premium'  },
+    { key: 'retail',      label: 'Retail'        },
+    { key: 'plus',        label: 'Plus'          },
+  ];
+  const months = ['oct','nov','dec','jan','feb','mar'];
+
+  tbody.innerHTML = '';
+  bpos.forEach(({ key: bpoKey, label: bpoLabel }) => {
+    lobs.forEach(({ key: lobKey, label: lobLabel }, lobIdx) => {
+      const tr = document.createElement('tr');
+
+      // BPO cell — rowspan 4 on first LOB row
+      if (lobIdx === 0) {
+        const bpoCell = `<td rowspan="4" style="font-weight:600;vertical-align:middle;">${bpoLabel}</td>`;
+        tr.innerHTML = bpoCell;
+      }
+
+      let cells = `<td>${lobLabel}</td>`;
+      months.forEach(m => {
+        const pct = computeMonthBnP(bpoKey, lobKey, m);
+        if (pct === null) {
+          cells += `<td><span class="badge badge-neutral">N/A</span></td>`;
+        } else if (pct > 0) {
+          cells += `<td><span class="badge badge-green">+${pct}%</span></td>`;
+        } else if (pct < 0) {
+          cells += `<td><span class="badge badge-red">${pct}%</span></td>`;
+        } else {
+          cells += `<td><span class="badge badge-neutral">0%</span></td>`;
+        }
+      });
+
+      tr.innerHTML += cells;
+      tbody.appendChild(tr);
+    });
+
+    // Spacer row between BPOs
+    const spacer = document.createElement('tr');
+    spacer.innerHTML = `<td colspan="8" style="padding:4px 0;border:none;"></td>`;
+    tbody.appendChild(spacer);
+  });
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderHistorical();
+  buildImpliedBnPTable();
   calcProposal1();
   calcProposal2();
   calcProposal3();
