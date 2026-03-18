@@ -689,38 +689,6 @@
     <button class="lob-tab" onclick="selectLOB('plus', this)">Plus</button>
   </div>
 
-  <!-- SUMMARY STATS (dynamically updated) -->
-  <div class="grid-4" style="margin-bottom:24px;">
-    <div class="stat-card bonus">
-      <label>Avg Monthly Score</label>
-      <div class="value green" id="h-avg-score">—</div>
-      <div class="sub">out of 45 pts</div>
-    </div>
-    <div class="stat-card neutral">
-      <label>Months with Bonus</label>
-      <div class="value amber" id="h-bonus-months">—</div>
-      <div class="sub">Oct 24 – Mar 25</div>
-    </div>
-    <div class="stat-card penalty">
-      <label>Months with Penalty</label>
-      <div class="value red" id="h-penalty-months">—</div>
-      <div class="sub">Oct 24 – Mar 25</div>
-    </div>
-    <div class="stat-card neutral">
-      <label>Net B&amp;P Outcome</label>
-      <div class="value amber" id="h-net-outcome">—</div>
-      <div class="sub">Estimated direction</div>
-    </div>
-  </div>
-
-  <!-- CHART -->
-  <div class="card" style="margin-bottom:24px;">
-    <div class="card-title" id="chart-title">TaskUs — Score vs. Target (Oct 2024 – Mar 2025)</div>
-    <div class="chart-wrap">
-      <canvas id="historicalChart"></canvas>
-    </div>
-  </div>
-
   <!-- PERFORMANCE TABLE -->
   <div class="card">
     <div class="card-title" id="table-bpo-title">TaskUs — Monthly KPI Results (Core LOB)</div>
@@ -1629,107 +1597,13 @@ const bnpActual = {
   },
 };
 
-// ─── HISTORICAL CHART ─────────────────────────────────────────────────
-let histChart;
-
-function initHistChart(bpoKey, lobKey) {
-  const lob = bpoData[bpoKey].lobs[lobKey];
-  const months = ['Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26'];
-  const actuals = ['aug','sep','oct','nov','dec','jan'].map(m => lob[m][0]);
-  const targets = Array(6).fill(lob.target[0]);
-  const validActuals = actuals.filter(v => v !== null);
-  const minVal = validActuals.length ? Math.max(40, Math.floor(Math.min(...validActuals) / 5) * 5 - 5) : 60;
-  const maxVal = validActuals.length ? Math.min(100, Math.ceil(Math.max(...validActuals, lob.target[0]) / 5) * 5 + 5) : 95;
-
-  const ctx = document.getElementById('historicalChart').getContext('2d');
-  if (histChart) histChart.destroy();
-
-  histChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        {
-          label: lob.kpis[0] + ' (Actual)',
-          data: actuals,
-          borderColor: '#00c48c',
-          backgroundColor: 'rgba(0,196,140,0.08)',
-          fill: true,
-          tension: 0.4,
-          pointRadius: 5,
-          pointBackgroundColor: '#00c48c',
-        },
-        {
-          label: 'Target',
-          data: targets,
-          borderColor: 'rgba(255,255,255,0.25)',
-          borderDash: [6,4],
-          fill: false,
-          tension: 0,
-          pointRadius: 0,
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: '#7a9ab5', font: { family: 'DM Sans' } } },
-        tooltip: { mode: 'index', intersect: false }
-      },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7a9ab5' } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7a9ab5', callback: v => v + '%' }, min: minVal, max: maxVal }
-      }
-    }
-  });
-}
-
-// ─── DYNAMIC STATS (uses bnpActual as source of truth) ───────────────
-function computeStats(bpoKey, lobKey) {
-  const monthKeys = ['aug','sep','oct','nov','dec','jan'];
-  let bonusMonths = 0, penaltyMonths = 0, scoreSum = 0, scoredMonths = 0;
-
-  monthKeys.forEach(m => {
-    const entry = bnpActual[bpoKey]?.[lobKey]?.[m];
-    if (!entry) return;
-    const { amt, score } = entry;
-    if (typeof amt === 'number' && amt > 0) bonusMonths++;
-    else if (typeof amt === 'number' && amt < 0) penaltyMonths++;
-    // amt === 0 → neutral;  amt === 'waived' → was a penalty but waived, count as penalty
-    else if (amt === 'waived') penaltyMonths++;
-    if (typeof score === 'number') { scoreSum += score; scoredMonths++; }
-  });
-
-  return {
-    scoreAvg: scoredMonths > 0 ? (scoreSum / scoredMonths).toFixed(1) : '—',
-    bonusMonths,
-    penaltyMonths,
-  };
-}
-
 // ─── RENDER ───────────────────────────────────────────────────────────
 function renderHistorical() {
   const bpoKey = currentBPO;
   const lobKey = currentLOB;
   const bpo = bpoData[bpoKey];
   const lob = bpo.lobs[lobKey];
-  const stats = computeStats(bpoKey, lobKey);
 
-  document.getElementById('h-avg-score').textContent = stats.scoreAvg + ' pts';
-  document.getElementById('h-bonus-months').textContent = stats.bonusMonths;
-  document.getElementById('h-penalty-months').textContent = stats.penaltyMonths;
-  const net = stats.bonusMonths > stats.penaltyMonths ? 'Net Bonus'
-            : stats.penaltyMonths > stats.bonusMonths ? 'Net Penalty' : 'Neutral';
-  document.getElementById('h-net-outcome').textContent = net;
-  const netEl = document.getElementById('h-net-outcome');
-  netEl.className = 'value';
-  if (net === 'Net Bonus') netEl.classList.add('green');
-  else if (net === 'Net Penalty') netEl.classList.add('red');
-  else netEl.classList.add('amber');
-
-  document.getElementById('chart-title').textContent =
-    `${bpo.label} ${lob.label} — ${lob.kpis[0]} vs. Target (Aug 2025 – Jan 2026)`;
   document.getElementById('table-bpo-title').textContent =
     `${bpo.label} — Monthly KPI Results (${lob.label})`;
 
@@ -1751,8 +1625,6 @@ function renderHistorical() {
     tr.innerHTML = cells;
     tbody.appendChild(tr);
   });
-
-  initHistChart(bpoKey, lobKey);
 }
 
 function selectBPO(key, btn) {
