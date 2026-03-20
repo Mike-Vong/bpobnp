@@ -658,19 +658,19 @@
           <tr>
             <th>BPO</th>
             <th>LOB</th>
-            <th>Aug 25</th>
             <th>Sep 25</th>
             <th>Oct 25</th>
             <th>Nov 25</th>
             <th>Dec 25</th>
             <th>Jan 26</th>
+            <th>Feb 26</th>
           </tr>
         </thead>
         <tbody id="implied-bnp-body"></tbody>
       </table>
     </div>
     <div style="margin-top:16px; padding:14px 16px; background:rgba(255,183,3,0.07); border:1px solid rgba(255,183,3,0.15); border-radius:10px; font-size:12px; color:var(--muted);">
-      <strong style="color:var(--amber);">Note on Data:</strong> The AI Smiley KPI replaced Positive Sentiment starting Nov 2025 (different scale; Aug–Oct values reflect Positive Sentiment). TELUS Core Premium B&amp;P was waived for Dec 2025 and Jan 2026.
+      <strong style="color:var(--amber);">Note on Data:</strong> The AI Smiley KPI replaced Positive Sentiment starting Nov 2025 (different scale; Sep–Oct values reflect Positive Sentiment). TELUS Core Premium B&amp;P was waived for Dec 2025, Jan 2026, and Feb 2026.
     </div>
   </div>
 </section>
@@ -1373,62 +1373,62 @@
 const bnpActual = {
   taskus: {
     core:        {
-      aug: { amt:  19069.20, score: 26.58 },
       sep: { amt:      0,    score: 25.21 },
       oct: { amt:      0,    score: 25.21 },
       nov: { amt:      0,    score: 24.10 },
       dec: { amt:      0,    score: 24.09 },
       jan: { amt: -12744.02, score: 23.28 },
+      feb: { amt: -10190.16, score: 22.60 },
     },
     corepremium: {
-      aug: { amt:      0,    score: 25.88 },
       sep: { amt:      0,    score: 25.83 },
       oct: { amt:      0,    score: 25.83 },
       nov: { amt:      0,    score: 24.01 },
       dec: { amt:  -4937.51, score: 23.68 },
       jan: { amt:      0,    score: 24.30 },
+      feb: { amt:  -7769.01, score: 22.43 },
     },
     retail:      {
-      aug: { amt:      0,    score: 25.82 },
       sep: { amt:      0,    score: 24.94 },
       oct: { amt:      0,    score: 24.94 },
       nov: { amt:      0,    score: 24.53 },
       dec: { amt:   -734.50, score: 22.20 },
       jan: { amt:      0,    score: 24.67 },
+      feb: { amt:      0,    score: 24.29 },
     },
     plus:        {
-      aug: { amt:      0,    score: 25.82 },
       sep: { amt:      0,    score: 24.16 },
       oct: { amt:      0,    score: 24.16 },
       nov: { amt:      0,    score: 24.41 },
       dec: { amt:      0,    score: 25.09 },
       jan: { amt:   3253.73, score: 27.14 },
+      feb: { amt:      0,    score: 25.68 },
     },
   },
   telus: {
     corepremium: {
-      aug: { amt:  -3614.07, score: 19.88 },
       sep: { amt:  -7732.40, score: 15.04 },
       oct: { amt:  -3199.68, score: 20.04 },
       nov: { amt:  -4799.52, score: 18.78 },
       dec: { amt: 'waived',  score: 18.07 },
       jan: { amt: 'waived',  score: 20.27 },
+      feb: { amt: 'waived',  score: 15.28 },
     },
     retail:      {
-      aug: { amt:   1556.09, score: 28.64 },
       sep: { amt:      0,    score: 25.28 },
       oct: { amt:  -1544.67, score: 20.28 },
       nov: { amt:      0,    score: 25.42 },
       dec: { amt:  -1412.31, score: 23.28 },
       jan: { amt:  -1487.12, score: 23.61 },
+      feb: { amt:      0,    score: 24.30 },
     },
     plus:        {
-      aug: { amt:   2728.20, score: 28.22 },
       sep: { amt:   2768.73, score: 27.02 },
       oct: { amt:   2700.52, score: 26.54 },
       nov: { amt:      0,    score: 24.25 },
       dec: { amt:      0,    score: 25.26 },
       jan: { amt:   2765.05, score: 26.49 },
+      feb: { amt:   2608.64, score: 28.54 },
     },
   },
 };
@@ -1791,7 +1791,7 @@ function buildImpliedBnPTable() {
     { key: 'retail',      label: 'Retail'       },
     { key: 'plus',        label: 'Plus'         },
   ];
-  const months = ['aug','sep','oct','nov','dec','jan'];
+  const months = ['sep','oct','nov','dec','jan','feb'];
 
   tbody.innerHTML = '';
   bpos.forEach(({ key: bpoKey, label: bpoLabel }) => {
